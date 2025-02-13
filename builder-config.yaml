@@ -20,8 +20,6 @@ processors:
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/attributesprocessor v0.115.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/transformprocessor v0.115.0
   - gomod: github.com/honeycombio/opentelemetry-collector-symbolicator/symbolicatorprocessor v0.0.2-dev
-    # name: symbolicatorprocessor
-    # path: ./symbolicatorprocessor
 
 receivers:
   - gomod: go.opentelemetry.io/collector/receiver/otlpreceiver v0.115.0
