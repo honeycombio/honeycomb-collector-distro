@@ -9,6 +9,9 @@ receivers:
 processors:
   symbolicator:
   batch:
+  memory_limiter:
+    check_interval: 1s
+    limit_mib: 4000
 
 exporters:
   debug:
@@ -18,7 +21,7 @@ service:
   pipelines:
     traces:
       receivers: [otlp]
-      processors: [symbolicator, batch]
+      processors: [memory_limiter, batch, symbolicator]
       exporters: [debug]
   telemetry:
     logs:
