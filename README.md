@@ -7,33 +7,33 @@ Honeycomb's OpenTelemetry collector distribution built with [OCB](https://github
 
 ## Components
 
-| Type | Name | Version | Link |
-|----------------|----------------|---------|------|
-| Exporter       | debugexporter  | v0.115.0 | [debugexporter](https://pkg.go.dev/go.opentelemetry.io/collector/exporter/debugexporter@v0.115.0) |
-| Exporter       | otlpexporter   | v0.115.0 | [otlpexporter](https://pkg.go.dev/go.opentelemetry.io/collector/exporter/otlpexporter@v0.115.0) |
-| Exporter       | nopexporter    | v0.115.0 | [nopexporter](https://pkg.go.dev/go.opentelemetry.io/collector/exporter/nopexporter@v0.115.0) |
-| Exporter       | otlphttpexporter | v0.115.0 | [otlphttpexporter](https://pkg.go.dev/go.opentelemetry.io/collector/exporter/otlphttpexporter@v0.115.0) |
-| Exporter       | fileexporter   | v0.115.0 | [fileexporter](https://pkg.go.dev/github.com/open-telemetry/opentelemetry-collector-contrib/exporter/fileexporter@v0.115.0) |
-| Processor      | batchprocessor | v0.115.0 | [batchprocessor](https://pkg.go.dev/go.opentelemetry.io/collector/processor/batchprocessor@v0.115.0) |
-| Processor      | memorylimiterprocessor | v0.115.0 | [memorylimiterprocessor](https://pkg.go.dev/go.opentelemetry.io/collector/processor/memorylimiterprocessor@v0.115.0) |
-| Processor      | filterprocessor | v0.115.0 | [filterprocessor](https://pkg.go.dev/github.com/open-telemetry/opentelemetry-collector-contrib/processor/filterprocessor@v0.115.0) |
-| Processor      | attributesprocessor | v0.115.0 | [attributesprocessor](https://pkg.go.dev/github.com/open-telemetry/opentelemetry-collector-contrib/processor/attributesprocessor@v0.115.0) |
-| Processor      | transformprocessor | v0.115.0 | [transformprocessor](https://pkg.go.dev/github.com/open-telemetry/opentelemetry-collector-contrib/processor/transformprocessor@v0.115.0) |
-| Processor      | symbolicatorprocessor | v0.0.2-dev | [symbolicatorprocessor](https://pkg.go.dev/github.com/honeycombio/opentelemetry-collector-symbolicator/symbolicatorprocessor@v0.0.2-dev) |
-| Receiver       | otlpreceiver   | v0.115.0 | [otlpreceiver](https://pkg.go.dev/go.opentelemetry.io/collector/receiver/otlpreceiver@v0.115.0) |
-| Receiver       | nopreceiver    | v0.115.0 | [nopreceiver](https://pkg.go.dev/go.opentelemetry.io/collector/receiver/nopreceiver@v0.115.0) |
-| Receiver       | filelogreceiver | v0.115.0 | [filelogreceiver](https://pkg.go.dev/github.com/open-telemetry/opentelemetry-collector-contrib/receiver/filelogreceiver@v0.115.0) |
-| Receiver       | jaegerreceiver | v0.115.0 | [jaegerreceiver](https://pkg.go.dev/github.com/open-telemetry/opentelemetry-collector-contrib/receiver/jaegerreceiver@v0.115.0) |
-| Receiver       | hostmetricsreceiver | v0.115.0 | [hostmetricsreceiver](https://pkg.go.dev/github.com/open-telemetry/opentelemetry-collector-contrib/receiver/hostmetricsreceiver@v0.115.0) |
-| Receiver       | kafkareceiver  | v0.115.0 | [kafkareceiver](https://pkg.go.dev/github.com/open-telemetry/opentelemetry-collector-contrib/receiver/kafkareceiver@v0.115.0) |
-| Receiver       | prometheusreceiver | v0.115.0 | [prometheusreceiver](https://pkg.go.dev/github.com/open-telemetry/opentelemetry-collector-contrib/receiver/prometheusreceiver@v0.115.0) |
-| Receiver       | kubeletstatsreceiver | v0.115.0 | [kubeletstatsreceiver](https://pkg.go.dev/github.com/open-telemetry/opentelemetry-collector-contrib/receiver/kubeletstatsreceiver@v0.115.0) |
-| Receiver       | zipkinreceiver | v0.115.0 | [zipkinreceiver](https://pkg.go.dev/github.com/open-telemetry/opentelemetry-collector-contrib/receiver/zipkinreceiver@v0.115.0) |
-| Provider       | envprovider    | v1.17.0 | [envprovider](https://pkg.go.dev/go.opentelemetry.io/collector/confmap/provider/envprovider@v1.17.0) |
-| Provider       | fileprovider   | v1.17.0 | [fileprovider](https://pkg.go.dev/go.opentelemetry.io/collector/confmap/provider/fileprovider@v1.17.0) |
-| Provider       | httpprovider   | v1.17.0 | [httpprovider](https://pkg.go.dev/go.opentelemetry.io/collector/confmap/provider/httpprovider@v1.17.0) |
-| Provider       | httpsprovider  | v1.17.0 | [httpsprovider](https://pkg.go.dev/go.opentelemetry.io/collector/confmap/provider/httpsprovider@v1.17.0) |
-| Provider       | yamlprovider   | v1.17.0 | [yamlprovider](https://pkg.go.dev/go.opentelemetry.io/collector/confmap/provider/yamlprovider@v1.17.0) |
-| Extension      | zpagesextension | v0.115.0 | [zpagesextension](https://pkg.go.dev/go.opentelemetry.io/collector/extension/zpagesextension@v0.115.0) |
-| Extension      | healthcheckextension | v0.115.0 | [healthcheckextension](https://pkg.go.dev/github.com/open-telemetry/opentelemetry-collector-contrib/extension/healthcheckextension@v0.115.0) |
-| Extension      | pprofextension | v0.115.0 | [pprofextension](https://pkg.go.dev/github.com/open-telemetry/opentelemetry-collector-contrib/extension/pprofextension@v0.115.0) |
+| Type | Name | Link |
+|------|------|------|
+| Exporter       | debugexporter  | [debugexporter](https://pkg.go.dev/go.opentelemetry.io/collector/exporter/debugexporter) |
+| Exporter       | otlpexporter   | [otlpexporter](https://pkg.go.dev/go.opentelemetry.io/collector/exporter/otlpexporter) |
+| Exporter       | nopexporter    | [nopexporter](https://pkg.go.dev/go.opentelemetry.io/collector/exporter/nopexporter) |
+| Exporter       | otlphttpexporter | [otlphttpexporter](https://pkg.go.dev/go.opentelemetry.io/collector/exporter/otlphttpexporter) |
+| Exporter       | fileexporter   | [fileexporter](https://pkg.go.dev/github.com/open-telemetry/opentelemetry-collector-contrib/exporter/fileexporter) |
+| Processor      | batchprocessor | [batchprocessor](https://pkg.go.dev/go.opentelemetry.io/collector/processor/batchprocessor) |
+| Processor      | memorylimiterprocessor | [memorylimiterprocessor](https://pkg.go.dev/go.opentelemetry.io/collector/processor/memorylimiterprocessor) |
+| Processor      | filterprocessor | [filterprocessor](https://pkg.go.dev/github.com/open-telemetry/opentelemetry-collector-contrib/processor/filterprocessor) |
+| Processor      | attributesprocessor | [attributesprocessor](https://pkg.go.dev/github.com/open-telemetry/opentelemetry-collector-contrib/processor/attributesprocessor) |
+| Processor      | transformprocessor | [transformprocessor](https://pkg.go.dev/github.com/open-telemetry/opentelemetry-collector-contrib/processor/transformprocessor) |
+| Processor      | symbolicatorprocessor | [symbolicatorprocessor](https://pkg.go.dev/github.com/honeycombio/opentelemetry-collector-symbolicator/symbolicatorprocessor) |
+| Receiver       | otlpreceiver   | [otlpreceiver](https://pkg.go.dev/go.opentelemetry.io/collector/receiver/otlpreceiver) |
+| Receiver       | nopreceiver    | [nopreceiver](https://pkg.go.dev/go.opentelemetry.io/collector/receiver/nopreceiver) |
+| Receiver       | filelogreceiver | [filelogreceiver](https://pkg.go.dev/github.com/open-telemetry/opentelemetry-collector-contrib/receiver/filelogreceiver) |
+| Receiver       | jaegerreceiver | [jaegerreceiver](https://pkg.go.dev/github.com/open-telemetry/opentelemetry-collector-contrib/receiver/jaegerreceiver) |
+| Receiver       | hostmetricsreceiver | [hostmetricsreceiver](https://pkg.go.dev/github.com/open-telemetry/opentelemetry-collector-contrib/receiver/hostmetricsreceiver) |
+| Receiver       | kafkareceiver  | [kafkareceiver](https://pkg.go.dev/github.com/open-telemetry/opentelemetry-collector-contrib/receiver/kafkareceiver) |
+| Receiver       | prometheusreceiver | [prometheusreceiver](https://pkg.go.dev/github.com/open-telemetry/opentelemetry-collector-contrib/receiver/prometheusreceiver) |
+| Receiver       | kubeletstatsreceiver | [kubeletstatsreceiver](https://pkg.go.dev/github.com/open-telemetry/opentelemetry-collector-contrib/receiver/kubeletstatsreceiver) |
+| Receiver       | zipkinreceiver | [zipkinreceiver](https://pkg.go.dev/github.com/open-telemetry/opentelemetry-collector-contrib/receiver/zipkinreceiver) |
+| Provider       | envprovider    | [envprovider](https://pkg.go.dev/go.opentelemetry.io/collector/confmap/provider/envprovider) |
+| Provider       | fileprovider   | [fileprovider](https://pkg.go.dev/go.opentelemetry.io/collector/confmap/provider/fileprovider) |
+| Provider       | httpprovider   | [httpprovider](https://pkg.go.dev/go.opentelemetry.io/collector/confmap/provider/httpprovider) |
+| Provider       | httpsprovider  | [httpsprovider](https://pkg.go.dev/go.opentelemetry.io/collector/confmap/provider/httpsprovider) |
+| Provider       | yamlprovider   | [yamlprovider](https://pkg.go.dev/go.opentelemetry.io/collector/confmap/provider/yamlprovider) |
+| Extension      | zpagesextension | [zpagesextension](https://pkg.go.dev/go.opentelemetry.io/collector/extension/zpagesextension) |
+| Extension      | healthcheckextension | [healthcheckextension](https://pkg.go.dev/github.com/open-telemetry/opentelemetry-collector-contrib/extension/healthcheckextension) |
+| Extension      | pprofextension | [pprofextension](https://pkg.go.dev/github.com/open-telemetry/opentelemetry-collector-contrib/extension/pprofextension) |
