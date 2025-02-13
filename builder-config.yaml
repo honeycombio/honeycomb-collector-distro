@@ -1,7 +1,7 @@
 dist:
   name: honeycomb-otelcol
   description: Honeycomb OpenTelemetry Collector distribution
-  output_path: ./honeycomb-otelcol
+  output_path: ./bin
   version: 0.115.0
 
 exporters:

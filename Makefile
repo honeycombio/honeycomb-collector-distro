@@ -4,7 +4,7 @@ builder:
 
 .PHONY: clean
 clean:
-	rm -rf honeycomb-otelcol
+	rm -rf bin
 
 .PHONY: build
 build: builder
@@ -16,5 +16,5 @@ build-docker:
 
 .PHONY: run
 run: build
-	./honeycomb-otelcol/honeycomb-otelcol --config config.yaml
+	./bin/honeycomb-otelcol --config config.yaml
 
