@@ -12,7 +12,7 @@ build: builder
 
 .PHONY: build-docker
 build-docker:
-	docker buildx build . -t honeycomb-otelcol
+	docker buildx build --platform linux/arm64 . -t honeycomb-otelcol
 
 .PHONY: run
 run: build
