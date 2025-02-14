@@ -25,21 +25,22 @@ jobs:
           command: |
             docker buildx create --use --name multiarch_builder
             docker buildx inspect --bootstrap  # Ensures everything is set up correctly
-            make build-docker
-      # - run:
-      #     name: Login to Docker Hub
-      #     command: echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin
-      # - run:
-      #     name: Build and Push Multi-Arch Docker Image
-      #     command: |
-      #       docker buildx build \
-      #         --platform linux/amd64,linux/arm64 \
-      #         --push \
-      #         -t $DOCKERHUB_USERNAME/$IMAGE_NAME:$CIRCLE_SHA1 \
-      #         -t $DOCKERHUB_USERNAME/$IMAGE_NAME:latest \
-              # .
+            # make build-docker
+      - run:
+          name: Login to Docker Hub
+          command: echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin
+      - run:
+          name: Build and Push Multi-Arch Docker Image
+          command: |
+            docker buildx build \
+              --platform linux/amd64,linux/arm64 \
+              --push \
+              -t $DOCKERHUB_USERNAME/honeycomb-opentelemetry-collector:$CIRCLE_SHA1 \
+              -t $DOCKERHUB_USERNAME/honeycomb-opentelemetry-collector:latest \
+              .
 workflows:
   version: 2
   build-and-push-workflow:
     jobs:
-      - build-and-push-multiarch
+      - build-and-push-multiarch:
+          context: Honeycomb Secrets for Public Repos
