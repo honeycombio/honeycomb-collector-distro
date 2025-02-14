@@ -9,6 +9,7 @@ executors:
 jobs:
   build-and-push-multiarch:
     executor: docker-executor
+    resource_class: xlarge
     steps:
       - checkout
       - setup_remote_docker:
