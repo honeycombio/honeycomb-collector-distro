@@ -15,10 +15,10 @@ jobs:
       - setup_remote_docker:
           # version: 20.10.7
           privileged: true  # Required for Buildx
-      # - run:
-      #     name: Install QEMU for Multi-Arch Builds
-      #     command: |
-      #       docker run --rm --privileged tonistiigi/binfmt --install all
+      - run:
+          name: Install QEMU for Multi-Arch Builds
+          command: |
+            docker run --rm --privileged tonistiigi/binfmt --install all
       - run:
           name: Set up Docker Buildx
           command: |
