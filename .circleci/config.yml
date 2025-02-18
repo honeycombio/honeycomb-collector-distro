@@ -35,8 +35,8 @@ jobs:
             docker buildx build \
               --platform linux/amd64,linux/arm64 \
               --push \
-              -t $DOCKER_USERNAME/opentelemetry-collector-symbolicator:$CIRCLE_SHA1 \
-              -t $DOCKER_USERNAME/opentelemetry-collector-symbolicator:latest \
+              -t honeycombio/opentelemetry-collector-symbolicator:$CIRCLE_SHA1 \
+              -t honeycombio/opentelemetry-collector-symbolicator:latest \
               .
 workflows:
   version: 2
