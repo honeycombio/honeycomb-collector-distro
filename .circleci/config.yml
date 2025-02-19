@@ -29,6 +29,8 @@ jobs:
           command: |
             docker buildx build \
               --platform linux/amd64,linux/arm64 \
+              --sbom=true \
+              --provenance=true \
               --push \
               -t honeycombio/honeycomb-opentelemetry-collector:$CIRCLE_SHA1 \
               -t honeycombio/honeycomb-opentelemetry-collector:$CIRCLE_TAG \
