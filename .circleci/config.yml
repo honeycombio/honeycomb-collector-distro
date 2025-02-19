@@ -15,10 +15,6 @@ jobs:
       - setup_remote_docker:
           privileged: true  # Required for Buildx
       - run:
-          name: Install QEMU for Multi-Arch Builds
-          command: |
-            docker run --rm --privileged tonistiigi/binfmt --install all
-      - run:
           no_output_timeout: 30m
           name: Set up Docker Buildx
           command: |
