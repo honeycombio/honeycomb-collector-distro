@@ -1,6 +1,6 @@
 # Honeycomb OpenTelemetry Collector Distro changelog
 
-## v0.0.2 [beta] - 2025/02/20
+## v0.0.3 [beta] - 2025/02/21
 
 ### 🛠️ Maintenance
 
