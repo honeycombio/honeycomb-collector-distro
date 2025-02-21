@@ -1,5 +1,11 @@
 # Honeycomb OpenTelemetry Collector Distro changelog
 
+## v0.0.4 [beta] - 2025/02/21
+
+### ✨ Features
+
+- feat: Update symbolicator processor (#10) | @martin308
+
 ## v0.0.3 [beta] - 2025/02/21
 
 ### 🛠️ Maintenance
