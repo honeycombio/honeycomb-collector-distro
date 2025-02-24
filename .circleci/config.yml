@@ -37,7 +37,6 @@ jobs:
               -t honeycombio/honeycomb-opentelemetry-collector:$CIRCLE_SHA1 \
               -t honeycombio/honeycomb-opentelemetry-collector:$CIRCLE_TAG \
               -t honeycombio/honeycomb-opentelemetry-collector:latest \
-
               .
       - docker/update-description:
           docker-username: DOCKER_USERNAME
