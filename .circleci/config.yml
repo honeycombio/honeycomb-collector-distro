@@ -25,7 +25,7 @@ jobs:
             docker buildx inspect --bootstrap  # Ensures everything is set up correctly
       - run:
           name: Login to Docker Hub
-          command: echo $DOCKER_TOKEN | docker login -u $DOCKER_USERNAME --password-stdin
+          command: echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
       # - run:
       #     name: Build and Push Multi-Arch Docker Image
       #     command: |
@@ -38,7 +38,7 @@ jobs:
       #         .
       - docker/update-description:
           docker-username: DOCKER_USERNAME
-          docker-password: DOCKER_TOKEN
+          docker-password: DOCKER_PASSWORD
           image: honeycombio/honeycomb-opentelemetry-collector
           # readme-path: README.md  # Syncs README.md with Docker Hub description
 workflows:
