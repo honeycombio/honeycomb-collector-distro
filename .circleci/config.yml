@@ -38,8 +38,8 @@ jobs:
               -t honeycombio/honeycomb-opentelemetry-collector:$CIRCLE_SHA1 \
               .
       - docker/update-description:
-          docker-username: $DOCKER_USERNAME
-          docker-password: $DOCKER_PASSWORD
+          docker-username: DOCKER_USERNAME
+          docker-password: DOCKER_PASSWORD
           image: honeycombio/honeycomb-opentelemetry-collector
           # readme-path: README.md  # Syncs README.md with Docker Hub description
 workflows:
