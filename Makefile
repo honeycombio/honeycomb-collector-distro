@@ -1,6 +1,6 @@
 .PHONY: builder
 builder:
-	go install go.opentelemetry.io/collector/cmd/builder@v0.119.0
+	go install go.opentelemetry.io/collector/cmd/builder@v0.121.0
 
 .PHONY: clean
 clean:
@@ -17,4 +17,3 @@ build-docker:
 .PHONY: run
 run: build
 	./bin/honeycomb-otelcol --config config.yaml
-
