@@ -30,6 +30,7 @@ docker run \
 | Processor      | attributesprocessor | [attributesprocessor](https://pkg.go.dev/github.com/open-telemetry/opentelemetry-collector-contrib/processor/attributesprocessor) |
 | Processor      | transformprocessor | [transformprocessor](https://pkg.go.dev/github.com/open-telemetry/opentelemetry-collector-contrib/processor/transformprocessor) |
 | Processor      | symbolicatorprocessor | [symbolicatorprocessor](https://pkg.go.dev/github.com/honeycombio/opentelemetry-collector-symbolicator/symbolicatorprocessor) |
+| Processor      | resourcedetectionprocessor | [resourcedetectionprocessor](https://pkg.go.dev/github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourcedetectionprocessor) |
 | Receiver       | otlpreceiver   | [otlpreceiver](https://pkg.go.dev/go.opentelemetry.io/collector/receiver/otlpreceiver) |
 | Receiver       | nopreceiver    | [nopreceiver](https://pkg.go.dev/go.opentelemetry.io/collector/receiver/nopreceiver) |
 | Receiver       | filelogreceiver | [filelogreceiver](https://pkg.go.dev/github.com/open-telemetry/opentelemetry-collector-contrib/receiver/filelogreceiver) |
