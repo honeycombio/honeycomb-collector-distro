@@ -1,5 +1,15 @@
 # Honeycomb OpenTelemetry Collector Distro changelog
 
+## v0.0.6 [beta] - 2025/03/18
+
+### ✨ Features
+
+- feat: Add resource detection processor (#17) | @mterhar
+
+### 🛠️ Maintenance
+
+- feat: Update go and collector versions (#16) | @martin308
+
 ## v0.0.5 [beta] - 2025/02/28
 
 ### ✨ Features
