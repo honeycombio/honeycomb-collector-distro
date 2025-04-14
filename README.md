@@ -46,5 +46,6 @@ docker run \
 | Provider       | httpsprovider  | [httpsprovider](https://pkg.go.dev/go.opentelemetry.io/collector/confmap/provider/httpsprovider) |
 | Provider       | yamlprovider   | [yamlprovider](https://pkg.go.dev/go.opentelemetry.io/collector/confmap/provider/yamlprovider) |
 | Extension      | zpagesextension | [zpagesextension](https://pkg.go.dev/go.opentelemetry.io/collector/extension/zpagesextension) |
+| Extension      | bearertokenauthextension | [bearertokenauthextension](github.com/open-telemetry/opentelemetry-collector-contrib/extension/bearertokenauthextension) |
 | Extension      | healthcheckextension | [healthcheckextension](https://pkg.go.dev/github.com/open-telemetry/opentelemetry-collector-contrib/extension/healthcheckextension) |
 | Extension      | pprofextension | [pprofextension](https://pkg.go.dev/github.com/open-telemetry/opentelemetry-collector-contrib/extension/pprofextension) |
