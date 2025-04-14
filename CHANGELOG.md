@@ -1,5 +1,23 @@
 # Honeycomb OpenTelemetry Collector Distro changelog
 
+## v0.0.7 [beta] - 2025/04/14
+
+### ✨ Features
+
+- feat: Add k8sclusterreceiver (#24) | @martin308
+- feat: Add k8sobjectsreceiver (#23) | @martin308
+- feat: Add S3 Provider (#25) | @martin308
+- feat: Add bearer token auth extension (#26) | @martin308
+
+### 🛠️ Maintenance
+
+- maint: Update v0.122.1/v1.28.1 (#20) | @martin308
+- maint: Update v0.123.0/v1.29.0 versions (#28) | @martin308
+
+### 📚 Docs
+
+- docs: Add new receivers to readme (#27) | @martin308
+
 ## v0.0.6 [beta] - 2025/03/18
 
 ### ✨ Features
