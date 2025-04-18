@@ -50,5 +50,6 @@ docker run \
 | Provider       | s3provider | [s3provider](https://pkg.go.dev/github.com/open-telemetry/opentelemetry-collector-contrib/confmap/provider/s3provider) |
 | Extension      | zpagesextension | [zpagesextension](https://pkg.go.dev/go.opentelemetry.io/collector/extension/zpagesextension) |
 | Extension      | bearertokenauthextension | [bearertokenauthextension](https://pkg.go.dev/github.com/open-telemetry/opentelemetry-collector-contrib/extension/bearertokenauthextension) |
+| Extension      | headerssetterextension | [headerssetterextension](https://pkg.go.dev/github.com/open-telemetry/opentelemetry-collector-contrib/extension/headerssetterextension) |
 | Extension      | healthcheckextension | [healthcheckextension](https://pkg.go.dev/github.com/open-telemetry/opentelemetry-collector-contrib/extension/healthcheckextension) |
 | Extension      | pprofextension | [pprofextension](https://pkg.go.dev/github.com/open-telemetry/opentelemetry-collector-contrib/extension/pprofextension) |
