@@ -1,5 +1,11 @@
 # Honeycomb OpenTelemetry Collector Distro changelog
 
+## v0.0.8 [beta] - 2025/04/18
+
+### ✨ Features
+
+- feat: Add headerssetterextension (#30) | @martin308
+
 ## v0.0.7 [beta] - 2025/04/14
 
 ### ✨ Features
