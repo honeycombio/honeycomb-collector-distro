@@ -41,6 +41,7 @@ docker run \
 | Receiver       | kafkareceiver  | [kafkareceiver](https://pkg.go.dev/github.com/open-telemetry/opentelemetry-collector-contrib/receiver/kafkareceiver) |
 | Receiver       | prometheusreceiver | [prometheusreceiver](https://pkg.go.dev/github.com/open-telemetry/opentelemetry-collector-contrib/receiver/prometheusreceiver) |
 | Receiver       | kubeletstatsreceiver | [kubeletstatsreceiver](https://pkg.go.dev/github.com/open-telemetry/opentelemetry-collector-contrib/receiver/kubeletstatsreceiver) |
+| Receiver       | webhookeventreceiver | [webhookeventreceiver](https://pkg.go.dev/github.com/open-telemetry/opentelemetry-collector-contrib/receiver/webhookeventreceiver) |
 | Receiver       | zipkinreceiver | [zipkinreceiver](https://pkg.go.dev/github.com/open-telemetry/opentelemetry-collector-contrib/receiver/zipkinreceiver) |
 | Provider       | envprovider    | [envprovider](https://pkg.go.dev/go.opentelemetry.io/collector/confmap/provider/envprovider) |
 | Provider       | fileprovider   | [fileprovider](https://pkg.go.dev/go.opentelemetry.io/collector/confmap/provider/fileprovider) |
