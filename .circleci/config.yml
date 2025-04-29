@@ -11,4 +11,4 @@ workflows:
           context: Honeycomb Secrets for Public Repos
           deploy: false
           image: honeycombio/honeycomb-opentelemetry-collector
-          tag: $CIRCLE_SHA1,$CIRCLE_TAG,latest
+          tag: $CIRCLE_SHA1,latest
