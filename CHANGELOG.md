@@ -1,5 +1,15 @@
 # Honeycomb OpenTelemetry Collector Distro changelog
 
+## v0.0.9 [beta] - 2025/04/29
+
+### ✨ Features
+
+- feat: webhookeventreceiver (#33) | @martin308
+
+### 🛠️ Maintenance
+
+- maint: Update base and contrib versions (#32) | @martin308
+
 ## v0.0.8 [beta] - 2025/04/18
 
 ### ✨ Features
