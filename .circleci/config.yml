@@ -9,6 +9,17 @@ workflows:
     jobs:
       - docker/publish:
           context: Honeycomb Secrets for Public Repos
+          executor:
+            name: docker/machine
+            resource-class: medium
           deploy: false
           image: honeycombio/honeycomb-opentelemetry-collector
-          tag: $CIRCLE_SHA1,latest
+          tag: x86_64-${CIRCLE_SHA1}
+      - docker/publish:
+          context: Honeycomb Secrets for Public Repos
+          executor:
+            name: docker/machine
+            resource-class: arm.medium
+          deploy: false
+          image: honeycombio/honeycomb-opentelemetry-collector
+          tag: arm64-${CIRCLE_SHA1}
