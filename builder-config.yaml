@@ -2,7 +2,8 @@ dist:
   name: honeycomb-otelcol
   description: Honeycomb OpenTelemetry Collector distribution
   output_path: ./bin
-  version: 0.128.0
+  # version of the distro
+  version: 0.0.10
 
 exporters:
   - gomod: go.opentelemetry.io/collector/exporter/debugexporter v0.128.0
