@@ -1,5 +1,14 @@
 # Honeycomb OpenTelemetry Collector Distro changelog
 
+## v0.0.10 [beta] - 2025/08/16
+### ✨ Features
+
+- feat: add dSYM processor (#37) | @mustafahaddara
+
+### 🛠️ Maintenance
+
+- maint: Update collector and collector contrib dependencies to latest version (#35) | @martin308
+
 ## v0.0.9 [beta] - 2025/04/29
 
 ### ✨ Features
