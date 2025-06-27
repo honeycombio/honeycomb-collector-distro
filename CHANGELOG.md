@@ -1,5 +1,10 @@
 # Honeycomb OpenTelemetry Collector Distro changelog
 
+## v0.0.13 [beta] - 2025/06/27
+### ✨ Features
+
+- feat: update symbolicator and dsymprocessor versions so error messages are included (#41) | @mustafahaddara
+
 ## v0.0.12 [beta] - 2025/06/26
 ### 🛠️ Maintenance
 

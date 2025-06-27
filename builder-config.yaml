@@ -3,7 +3,7 @@ dist:
   description: Honeycomb OpenTelemetry Collector distribution
   output_path: ./bin
   # version of the distro
-  version: 0.0.12
+  version: 0.0.13
 
 exporters:
   - gomod: go.opentelemetry.io/collector/exporter/debugexporter v0.128.0
@@ -19,8 +19,8 @@ processors:
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/attributesprocessor v0.128.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/transformprocessor v0.128.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourcedetectionprocessor v0.128.0
-  - gomod: github.com/honeycombio/opentelemetry-collector-symbolicator/symbolicatorprocessor v0.0.7
-  - gomod: github.com/honeycombio/opentelemetry-collector-symbolicator/dsymprocessor v0.0.3
+  - gomod: github.com/honeycombio/opentelemetry-collector-symbolicator/symbolicatorprocessor v0.0.8
+  - gomod: github.com/honeycombio/opentelemetry-collector-symbolicator/dsymprocessor v0.0.4
 
 receivers:
   - gomod: go.opentelemetry.io/collector/receiver/nopreceiver v0.128.0
