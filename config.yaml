@@ -8,6 +8,8 @@ receivers:
 
 processors:
   symbolicator:
+  proguard_symbolicator:
+  dsymprocessor:
   batch:
   memory_limiter:
     check_interval: 1s
@@ -21,7 +23,7 @@ service:
   pipelines:
     traces:
       receivers: [otlp]
-      processors: [memory_limiter, batch, symbolicator]
+      processors: [memory_limiter, batch, symbolicator, proguard_symbolicator, dsymprocessor]
       exporters: [debug]
   telemetry:
     logs:
