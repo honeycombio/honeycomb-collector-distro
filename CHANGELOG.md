@@ -1,5 +1,11 @@
 # Honeycomb OpenTelemetry Collector Distro changelog
 
+## v0.0.14 [beta] - 2025/07/02
+### ✨ Features
+- maint: update symbolicatorprocessor/v0.0.9 dsymprocessor/v0.0.5 proguardprocessor/v0.0.2 (#43)
+### ✨ Maintenance
+- maint: collector v0.129.0/v1.35.0 (#42)
+
 ## v0.0.13 [beta] - 2025/06/27
 ### ✨ Features
 
