@@ -23,7 +23,11 @@ service:
   pipelines:
     traces:
       receivers: [otlp]
-      processors: [memory_limiter, batch, symbolicator, proguard_symbolicator, dsymprocessor]
+      processors: [memory_limiter, batch, symbolicator]
+      exporters: [debug]
+    logs:
+      receivers: [otlp]
+      processors: [memory_limiter, batch, proguard_symbolicator, dsymprocessor]
       exporters: [debug]
   telemetry:
     logs:
