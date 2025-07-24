@@ -1,9 +1,16 @@
 # Honeycomb OpenTelemetry Collector Distro changelog
 
+## v0.0.15 [beta] - 2025/07/24
+### 🚨 Breaking Changes
+- maint: update sourcemapprocessor/v0.0.10 dsymprocessor/v0.0.6 proguardprocessor/v0.0.3 (#45) | @mustafahaddara
+    - Processors `symbolicator` and `dsymprocessor` renamed to `source_map_symbolicator` and `dsym_symbolicator` respectively
+    - Internal `symbolicatorprocessor` plugin renamed to `sourcemapprocessor`
+
 ## v0.0.14 [beta] - 2025/07/02
 ### ✨ Features
-- maint: update symbolicatorprocessor/v0.0.9 dsymprocessor/v0.0.5 proguardprocessor/v0.0.2 (#43)
-### ✨ Maintenance
+- maint: update symbolicatorprocessor/v0.0.9 dsymprocessor/v0.0.5 proguardprocessor/v0.0.2 (#43) | @martin308
+
+### 🛠️ Maintenance
 - maint: collector v0.129.0/v1.35.0 (#42)
 
 ## v0.0.13 [beta] - 2025/06/27
