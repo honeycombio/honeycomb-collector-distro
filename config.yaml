@@ -7,9 +7,9 @@ receivers:
         endpoint: 0.0.0.0:4318
 
 processors:
-  symbolicator:
+  source_map_symbolicator:
   proguard_symbolicator:
-  dsymprocessor:
+  dsym_symbolicator:
   batch:
   memory_limiter:
     check_interval: 1s
@@ -23,11 +23,11 @@ service:
   pipelines:
     traces:
       receivers: [otlp]
-      processors: [memory_limiter, batch, symbolicator]
+      processors: [memory_limiter, batch, source_map_symbolicator]
       exporters: [debug]
     logs:
       receivers: [otlp]
-      processors: [memory_limiter, batch, proguard_symbolicator, dsymprocessor]
+      processors: [memory_limiter, batch, proguard_symbolicator, dsym_symbolicator]
       exporters: [debug]
   telemetry:
     logs:
