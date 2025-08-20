@@ -1,5 +1,8 @@
 # Honeycomb OpenTelemetry Collector Distro changelog
 
+## Unreleased
+- maint: update proguardprocessor to v0.0.4
+
 ## v0.0.15 [beta] - 2025/07/24
 ### 🚨 Breaking Changes
 - maint: update sourcemapprocessor/v0.0.10 dsymprocessor/v0.0.6 proguardprocessor/v0.0.3 (#45) | @mustafahaddara
