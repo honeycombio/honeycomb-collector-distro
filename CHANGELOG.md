@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+chore: add a volume to the dockerfile
+
 ## v0.0.16 [beta] - 2025/08/20
 
 - maint: update proguardprocessor to v0.0.4 (#47) | @jairo-mendoza
