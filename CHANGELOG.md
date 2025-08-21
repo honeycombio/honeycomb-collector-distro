@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## v0.0.17 [beta] - 2025/08/21
+
 - chore: Add a `tmp` volume to the docker file so that we can cache the proguard mapper since it expects to be passed a cached file.
 
 ## v0.0.16 [beta] - 2025/08/20
