@@ -11,6 +11,7 @@ RUN make build
 FROM gcr.io/distroless/cc
 
 USER nonroot
+VOLUME /tmp
 
 COPY --from=build --chmod=755 /go/src/bin/honeycomb-otelcol /honeycomb-otelcol
 COPY --from=build  /go/src/config.yaml /
