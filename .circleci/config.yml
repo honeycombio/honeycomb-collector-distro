@@ -44,6 +44,7 @@ jobs:
           docker-password: DOCKER_PASSWORD
           image: honeycombio/honeycomb-opentelemetry-collector
       - aws-ecr/ecr_login:
+          account_id: 702835727665
           public_registry: true
       - run:
           name: Build and Push Multi-Arch Docker Image to Public ECR
