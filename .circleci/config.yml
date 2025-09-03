@@ -2,6 +2,7 @@ version: 2.1
 
 orbs:
   docker: circleci/docker@2.8.2
+  aws-ecr: circleci/aws-ecr@9.5.4
 
 executors:
   docker-executor:
@@ -26,8 +27,10 @@ jobs:
       - run:
           name: Login to Docker Hub
           command: echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+      - aws-ecr/ecr_login:
+          public_registry: true
       - run:
-          name: Build and Push Multi-Arch Docker Image
+          name: Build and Push Multi-Arch Docker Image to Docker Hub and Public ECR
           command: |
             docker buildx build \
               --platform linux/amd64,linux/arm64 \
@@ -37,6 +40,9 @@ jobs:
               -t honeycombio/honeycomb-opentelemetry-collector:$CIRCLE_SHA1 \
               -t honeycombio/honeycomb-opentelemetry-collector:$CIRCLE_TAG \
               -t honeycombio/honeycomb-opentelemetry-collector:latest \
+              -t public.ecr.aws/honeycombio/honeycomb-opentelemetry-collector:$CIRCLE_SHA1 \
+              -t public.ecr.aws/honeycombio/honeycomb-opentelemetry-collector:$CIRCLE_TAG \
+              -t public.ecr.aws/honeycombio/honeycomb-opentelemetry-collector:latest \
               .
       - docker/update-description:
           docker-username: DOCKER_USERNAME
