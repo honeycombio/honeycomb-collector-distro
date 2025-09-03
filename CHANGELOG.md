@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## v0.0.19 [beta] - 2025/09/03
+
+### 🛠️ Maintenance
+
+- fix(ci): add AWS OIDC authentication before ECR login (#55) | @lizthegrey
+
 ## v0.0.18 [beta] - 2025/09/03
 
 ### ✨ Features
