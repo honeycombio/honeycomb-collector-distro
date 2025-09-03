@@ -2,6 +2,7 @@ version: 2.1
 
 orbs:
   docker: circleci/docker@2.8.2
+  aws-cli: circleci/aws-cli@3.2.0
   aws-ecr: circleci/aws-ecr@9.5.4
 
 executors:
@@ -27,6 +28,10 @@ jobs:
       - run:
           name: Login to Docker Hub
           command: echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+      - aws-cli/setup:
+          role-arn: "arn:aws:iam::702835727665:role/circleci-public-repos"
+          role-session-name: "honeycomb-collector-distro"
+          aws-region: AWS_REGION
       - aws-ecr/ecr_login:
           public_registry: true
       - run:
