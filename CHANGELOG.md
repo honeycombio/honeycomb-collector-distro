@@ -2,6 +2,17 @@
 
 ## Unreleased
 
+## v0.0.18 [beta] - 2025/09/03
+
+### ✨ Features
+
+- feat(receivers): add awsfirehose receiver and metricstransformprocessor to enable Kinesis stream processing (#52) | @lizthegrey
+- feat: add public ECR registry distribution for improved availability (#51) | @lizthegrey
+
+### 🛠️ Maintenance
+
+- maint: update collector v0.134.0/v1.40.0 (#54) | @lizthegrey
+
 ## v0.0.17 [beta] - 2025/08/21
 
 - chore: Add a `tmp` volume to the docker file so that we can cache the proguard mapper since it expects to be passed a cached file.
