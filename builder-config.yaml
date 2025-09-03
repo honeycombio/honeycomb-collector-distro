@@ -17,6 +17,7 @@ processors:
   - gomod: go.opentelemetry.io/collector/processor/memorylimiterprocessor v0.129.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/filterprocessor v0.129.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/attributesprocessor v0.129.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/metricstransformprocessor v0.129.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/transformprocessor v0.129.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourcedetectionprocessor v0.129.0
   - gomod: github.com/honeycombio/opentelemetry-collector-symbolicator/sourcemapprocessor v0.0.10
@@ -26,6 +27,7 @@ processors:
 receivers:
   - gomod: go.opentelemetry.io/collector/receiver/nopreceiver v0.129.0
   - gomod: go.opentelemetry.io/collector/receiver/otlpreceiver v0.129.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsfirehosereceiver v0.129.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/filelogreceiver v0.129.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/hostmetricsreceiver v0.129.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/jaegerreceiver v0.129.0
