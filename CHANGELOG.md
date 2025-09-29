@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## v0.0.20 [beta] - 2025/09/29
+
+### 🛠️ Maintenance
+
+- maint: Update collector components to v1.42.0 / v0.136.0 (#56) | @MikeGoldsmith
+
 ## v0.0.19 [beta] - 2025/09/03
 
 ### 🛠️ Maintenance

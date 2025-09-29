@@ -3,7 +3,7 @@ dist:
   description: Honeycomb OpenTelemetry Collector distribution
   output_path: ./bin
   # version of the distro
-  version: 0.0.19
+  version: 0.0.20
 
 exporters:
   - gomod: go.opentelemetry.io/collector/exporter/debugexporter v0.136.0
