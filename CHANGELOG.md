@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## v0.0.21 [beta] - 2025/10/23
+
+### 🛠️ Maintenance
+
+- maint: Update symbolicator components to latest versions (#58) | @beekhc
+
 ## v0.0.20 [beta] - 2025/09/29
 
 ### 🛠️ Maintenance
