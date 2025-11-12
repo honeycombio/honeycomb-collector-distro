@@ -3,7 +3,7 @@ dist:
   description: Honeycomb OpenTelemetry Collector distribution
   output_path: ./bin
   # version of the distro
-  version: 0.0.21
+  version: 0.0.22
   cgo_enabled: true
 
 exporters:

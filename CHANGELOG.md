@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## v0.0.22 [beta] - 2025/11/10
+
+### 🛠️ Maintenance
+
+- maint: bump collector versions to v0.145.0/v0.139.0 (#60) | @TylerHelmuth
+
 ## v0.0.21 [beta] - 2025/10/23
 
 ### 🛠️ Maintenance
