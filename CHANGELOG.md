@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## v0.0.23 [beta] - 2025/11/19
+
+### 🛠️ Maintenance
+
+- maint: bump symbolicator processors to the latest versions (#62) | @jairo-mendoza
+
 ## v0.0.22 [beta] - 2025/11/10
 
 ### 🛠️ Maintenance
