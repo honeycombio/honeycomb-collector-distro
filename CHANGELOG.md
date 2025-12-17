@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## v0.0.24 [beta] - 2025/12/17
+
+- rel: prep v0.0.24 release of the distro and bump symbolicator processors (#64) | @jairo-mendoza
+
 ## v0.0.23 [beta] - 2025/11/19
 
 ### 🛠️ Maintenance
@@ -52,34 +56,43 @@
 - maint: update proguardprocessor to v0.0.4 (#47) | @jairo-mendoza
 
 ## v0.0.15 [beta] - 2025/07/24
+
 ### 🚨 Breaking Changes
+
 - maint: update sourcemapprocessor/v0.0.10 dsymprocessor/v0.0.6 proguardprocessor/v0.0.3 (#45) | @mustafahaddara
-    - Processors `symbolicator` and `dsymprocessor` renamed to `source_map_symbolicator` and `dsym_symbolicator` respectively
-    - Internal `symbolicatorprocessor` plugin renamed to `sourcemapprocessor`
+  - Processors `symbolicator` and `dsymprocessor` renamed to `source_map_symbolicator` and `dsym_symbolicator` respectively
+  - Internal `symbolicatorprocessor` plugin renamed to `sourcemapprocessor`
 
 ## v0.0.14 [beta] - 2025/07/02
+
 ### ✨ Features
+
 - maint: update symbolicatorprocessor/v0.0.9 dsymprocessor/v0.0.5 proguardprocessor/v0.0.2 (#43) | @martin308
 
 ### 🛠️ Maintenance
+
 - maint: collector v0.129.0/v1.35.0 (#42)
 
 ## v0.0.13 [beta] - 2025/06/27
+
 ### ✨ Features
 
 - feat: update symbolicator and dsymprocessor versions so error messages are included (#41) | @mustafahaddara
 
 ## v0.0.12 [beta] - 2025/06/26
+
 ### 🛠️ Maintenance
 
 - maint: update dsymprocessor version (#40) | @mustafahaddara
 
 ## v0.0.11 [beta] - 2025/06/25
+
 ### 🛠️ Maintenance
 
 - maint: update dsymprocessor version (#39) | @mustafahaddara
 
 ## v0.0.10 [beta] - 2025/06/16
+
 ### ✨ Features
 
 - feat: add dSYM processor (#37) | @mustafahaddara
