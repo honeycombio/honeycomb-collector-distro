@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## v0.0.25 [beta] - 2026-01-12
+
+- maint: bump collector versions to v1.49.0/v0.143.0 (#60) | @TylerHelmuth
+
 ## v0.0.24 [beta] - 2025/12/17
 
 - rel: prep v0.0.24 release of the distro and bump symbolicator processors (#64) | @jairo-mendoza
