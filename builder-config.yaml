@@ -3,7 +3,7 @@ dist:
   description: Honeycomb OpenTelemetry Collector distribution
   output_path: ./bin
   # version of the distro
-  version: 0.0.25
+  version: 0.0.26
   cgo_enabled: true
 
 exporters:
@@ -22,7 +22,7 @@ processors:
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/transformprocessor v0.143.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourcedetectionprocessor v0.143.0
   - gomod: github.com/honeycombio/opentelemetry-collector-symbolicator/sourcemapprocessor v1.0.3
-  - gomod: github.com/honeycombio/opentelemetry-collector-symbolicator/dsymprocessor v1.0.1
+  - gomod: github.com/honeycombio/opentelemetry-collector-symbolicator/dsymprocessor v1.0.2
   - gomod: github.com/honeycombio/opentelemetry-collector-symbolicator/proguardprocessor v1.0.1
 
 receivers:

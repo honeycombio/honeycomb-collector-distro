@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## v0.0.26 [beta] - 2026-01-14
+
+### 🛠️ Maintenance
+
+- maint: bump dsymprocessor to v1.0.2
+
 ## v0.0.25 [beta] - 2026-01-12
 
 - maint: bump collector versions to v1.49.0/v0.143.0 (#60) | @TylerHelmuth
