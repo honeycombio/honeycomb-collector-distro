@@ -2,6 +2,17 @@
 
 ## Unreleased
 
+## v0.0.27 [beta] - 2026-03-05
+
+### ✨ Features
+
+- feat: Add Enhance Indexing S3 Exporter (#68) | @tdarwin
+
+### 🛠️ Maintenance
+
+- maint: bump collector versions to v1.53.0/v0.147.0 (#68) | @tdarwin
+
+
 ## v0.0.26 [beta] - 2026-01-14
 
 ### 🛠️ Maintenance
