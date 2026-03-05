@@ -24,6 +24,7 @@ docker run \
 | Exporter       | nopexporter    | [nopexporter](https://pkg.go.dev/go.opentelemetry.io/collector/exporter/nopexporter) |
 | Exporter       | otlphttpexporter | [otlphttpexporter](https://pkg.go.dev/go.opentelemetry.io/collector/exporter/otlphttpexporter) |
 | Exporter       | fileexporter   | [fileexporter](https://pkg.go.dev/github.com/open-telemetry/opentelemetry-collector-contrib/exporter/fileexporter) |
+| Exporter       | enhanceindexings3exporter | [enhanceindexings3exporter](https://pkg.go.dev/github.com/honeycombio/enhance-indexing-s3-exporter/enhanceindexings3exporter) |
 | Processor      | batchprocessor | [batchprocessor](https://pkg.go.dev/go.opentelemetry.io/collector/processor/batchprocessor) |
 | Processor      | memorylimiterprocessor | [memorylimiterprocessor](https://pkg.go.dev/go.opentelemetry.io/collector/processor/memorylimiterprocessor) |
 | Processor      | filterprocessor | [filterprocessor](https://pkg.go.dev/github.com/open-telemetry/opentelemetry-collector-contrib/processor/filterprocessor) |
