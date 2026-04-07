@@ -24,8 +24,6 @@ jobs:
 
       - name: Check for OTel Collector updates
         id: check
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           # Get current versions from builder-config.yaml
           CURRENT_CORE_V0=$(grep -m1 'go.opentelemetry.io/collector/exporter/' builder-config.yaml | grep -oP 'v0\.\d+\.\d+')
@@ -35,20 +33,16 @@ jobs:
           echo "Current collector core v1: $CURRENT_CORE_V1"
           echo "Current collector contrib v0: $CURRENT_CONTRIB_V0"
 
-          # Check open-telemetry/opentelemetry-collector for core v0.x tags
-          LATEST_CORE_V0=$(gh api repos/open-telemetry/opentelemetry-collector/tags --per_page=100 \
-            --jq '[.[].name | select(test("^v0\\.\\d+\\.\\d+$"))] | first')
-          echo "Latest collector core v0 tag: $LATEST_CORE_V0"
+          # Query the Go module proxy for latest stable versions
+          # The /@latest endpoint returns only stable releases, skipping pre-release/beta/RC versions
+          LATEST_CORE_V0=$(curl -sf 'https://proxy.golang.org/go.opentelemetry.io/collector/exporter/debugexporter/@latest' | jq -r '.Version')
+          echo "Latest collector core v0 (from Go proxy): $LATEST_CORE_V0"
 
-          # Check open-telemetry/opentelemetry-collector for core v1.x tags (confmap providers)
-          LATEST_CORE_V1=$(gh api repos/open-telemetry/opentelemetry-collector/tags --per_page=100 \
-            --jq '[.[].name | select(test("^v1\\.\\d+\\.\\d+$"))] | first')
-          echo "Latest collector core v1 tag: $LATEST_CORE_V1"
+          LATEST_CORE_V1=$(curl -sf 'https://proxy.golang.org/go.opentelemetry.io/collector/confmap/provider/envprovider/@latest' | jq -r '.Version')
+          echo "Latest collector core v1 (from Go proxy): $LATEST_CORE_V1"
 
-          # Check open-telemetry/opentelemetry-collector-contrib for contrib v0.x tags
-          LATEST_CONTRIB_V0=$(gh api repos/open-telemetry/opentelemetry-collector-contrib/tags --per_page=100 \
-            --jq '[.[].name | select(test("^v0\\.\\d+\\.\\d+$"))] | first')
-          echo "Latest collector contrib v0 tag: $LATEST_CONTRIB_V0"
+          LATEST_CONTRIB_V0=$(curl -sf 'https://proxy.golang.org/github.com/open-telemetry/opentelemetry-collector-contrib/exporter/fileexporter/@latest' | jq -r '.Version')
+          echo "Latest collector contrib v0 (from Go proxy): $LATEST_CONTRIB_V0"
 
           CORE_V0_CHANGED="false"
           CORE_V1_CHANGED="false"
@@ -95,19 +89,14 @@ jobs:
 
       - name: Check enhance-indexing-s3-exporter
         id: s3_exporter
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           CURRENT=$(grep 'enhance-indexing-s3-exporter' builder-config.yaml | grep -oP 'v[\d.]+')
           echo "Current s3-exporter version: $CURRENT"
 
-          LATEST=$(gh api repos/honeycombio/enhance-indexing-s3-exporter/releases/latest --jq '.tag_name' 2>/dev/null || echo "")
-          if [ -z "$LATEST" ]; then
-            LATEST=$(gh api repos/honeycombio/enhance-indexing-s3-exporter/tags --jq '.[0].name' 2>/dev/null || echo "$CURRENT")
-          fi
-          echo "Latest s3-exporter version: $LATEST"
+          LATEST=$(curl -sf 'https://proxy.golang.org/github.com/honeycombio/enhance-indexing-s3-exporter/enhanceindexings3exporter/@latest' | jq -r '.Version')
+          echo "Latest s3-exporter version (from Go proxy): $LATEST"
 
-          if [ "$LATEST" != "$CURRENT" ] && [ -n "$LATEST" ]; then
+          if [ "$LATEST" != "$CURRENT" ] && [ -n "$LATEST" ] && [ "$LATEST" != "null" ]; then
             echo "updated=true" >> "$GITHUB_OUTPUT"
             echo "version=$LATEST" >> "$GITHUB_OUTPUT"
           else
@@ -116,21 +105,14 @@ jobs:
 
       - name: Check symbolicator/sourcemapprocessor
         id: symbolicator_sourcemap
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           CURRENT=$(grep 'symbolicator/sourcemapprocessor' builder-config.yaml | grep -oP 'v[\d.]+')
           echo "Current sourcemapprocessor version: $CURRENT"
 
-          LATEST=$(gh api repos/honeycombio/opentelemetry-collector-symbolicator/tags --jq '[.[].name | select(startswith("sourcemapprocessor/"))] | first' 2>/dev/null || echo "")
-          if [ -n "$LATEST" ]; then
-            LATEST=$(echo "$LATEST" | sed 's|sourcemapprocessor/||')
-          else
-            LATEST="$CURRENT"
-          fi
-          echo "Latest sourcemapprocessor version: $LATEST"
+          LATEST=$(curl -sf 'https://proxy.golang.org/github.com/honeycombio/opentelemetry-collector-symbolicator/sourcemapprocessor/@latest' | jq -r '.Version')
+          echo "Latest sourcemapprocessor version (from Go proxy): $LATEST"
 
-          if [ "$LATEST" != "$CURRENT" ]; then
+          if [ "$LATEST" != "$CURRENT" ] && [ -n "$LATEST" ] && [ "$LATEST" != "null" ]; then
             echo "updated=true" >> "$GITHUB_OUTPUT"
             echo "version=$LATEST" >> "$GITHUB_OUTPUT"
           else
@@ -139,21 +121,14 @@ jobs:
 
       - name: Check symbolicator/dsymprocessor
         id: symbolicator_dsym
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           CURRENT=$(grep 'symbolicator/dsymprocessor' builder-config.yaml | grep -oP 'v[\d.]+')
           echo "Current dsymprocessor version: $CURRENT"
 
-          LATEST=$(gh api repos/honeycombio/opentelemetry-collector-symbolicator/tags --jq '[.[].name | select(startswith("dsymprocessor/"))] | first' 2>/dev/null || echo "")
-          if [ -n "$LATEST" ]; then
-            LATEST=$(echo "$LATEST" | sed 's|dsymprocessor/||')
-          else
-            LATEST="$CURRENT"
-          fi
-          echo "Latest dsymprocessor version: $LATEST"
+          LATEST=$(curl -sf 'https://proxy.golang.org/github.com/honeycombio/opentelemetry-collector-symbolicator/dsymprocessor/@latest' | jq -r '.Version')
+          echo "Latest dsymprocessor version (from Go proxy): $LATEST"
 
-          if [ "$LATEST" != "$CURRENT" ]; then
+          if [ "$LATEST" != "$CURRENT" ] && [ -n "$LATEST" ] && [ "$LATEST" != "null" ]; then
             echo "updated=true" >> "$GITHUB_OUTPUT"
             echo "version=$LATEST" >> "$GITHUB_OUTPUT"
           else
@@ -162,21 +137,14 @@ jobs:
 
       - name: Check symbolicator/proguardprocessor
         id: symbolicator_proguard
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           CURRENT=$(grep 'symbolicator/proguardprocessor' builder-config.yaml | grep -oP 'v[\d.]+')
           echo "Current proguardprocessor version: $CURRENT"
 
-          LATEST=$(gh api repos/honeycombio/opentelemetry-collector-symbolicator/tags --jq '[.[].name | select(startswith("proguardprocessor/"))] | first' 2>/dev/null || echo "")
-          if [ -n "$LATEST" ]; then
-            LATEST=$(echo "$LATEST" | sed 's|proguardprocessor/||')
-          else
-            LATEST="$CURRENT"
-          fi
-          echo "Latest proguardprocessor version: $LATEST"
+          LATEST=$(curl -sf 'https://proxy.golang.org/github.com/honeycombio/opentelemetry-collector-symbolicator/proguardprocessor/@latest' | jq -r '.Version')
+          echo "Latest proguardprocessor version (from Go proxy): $LATEST"
 
-          if [ "$LATEST" != "$CURRENT" ]; then
+          if [ "$LATEST" != "$CURRENT" ] && [ -n "$LATEST" ] && [ "$LATEST" != "null" ]; then
             echo "updated=true" >> "$GITHUB_OUTPUT"
             echo "version=$LATEST" >> "$GITHUB_OUTPUT"
           else
