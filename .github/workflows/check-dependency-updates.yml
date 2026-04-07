@@ -1,0 +1,359 @@
+name: "Check Dependency Updates"
+
+on:
+  schedule:
+    # Run daily at 14:00 UTC (morning US time zones)
+    - cron: "0 14 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  check-otel-collector:
+    name: Check OTel Collector Updates
+    runs-on: ubuntu-latest
+    outputs:
+      updated: ${{ steps.check.outputs.updated }}
+      new_core_v0: ${{ steps.check.outputs.new_core_v0 }}
+      new_core_v1: ${{ steps.check.outputs.new_core_v1 }}
+      new_contrib_v0: ${{ steps.check.outputs.new_contrib_v0 }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check for OTel Collector updates
+        id: check
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Get current versions from builder-config.yaml
+          CURRENT_CORE_V0=$(grep -m1 'go.opentelemetry.io/collector/exporter/' builder-config.yaml | grep -oP 'v0\.\d+\.\d+')
+          CURRENT_CORE_V1=$(grep -m1 'go.opentelemetry.io/collector/confmap/provider/' builder-config.yaml | grep -oP 'v1\.\d+\.\d+')
+          CURRENT_CONTRIB_V0=$(grep -m1 'opentelemetry-collector-contrib/' builder-config.yaml | grep -oP 'v0\.\d+\.\d+')
+          echo "Current collector core v0: $CURRENT_CORE_V0"
+          echo "Current collector core v1: $CURRENT_CORE_V1"
+          echo "Current collector contrib v0: $CURRENT_CONTRIB_V0"
+
+          # Check open-telemetry/opentelemetry-collector for core v0.x tags
+          LATEST_CORE_V0=$(gh api repos/open-telemetry/opentelemetry-collector/tags --per_page=100 \
+            --jq '[.[].name | select(test("^v0\\.\\d+\\.\\d+$"))] | first')
+          echo "Latest collector core v0 tag: $LATEST_CORE_V0"
+
+          # Check open-telemetry/opentelemetry-collector for core v1.x tags (confmap providers)
+          LATEST_CORE_V1=$(gh api repos/open-telemetry/opentelemetry-collector/tags --per_page=100 \
+            --jq '[.[].name | select(test("^v1\\.\\d+\\.\\d+$"))] | first')
+          echo "Latest collector core v1 tag: $LATEST_CORE_V1"
+
+          # Check open-telemetry/opentelemetry-collector-contrib for contrib v0.x tags
+          LATEST_CONTRIB_V0=$(gh api repos/open-telemetry/opentelemetry-collector-contrib/tags --per_page=100 \
+            --jq '[.[].name | select(test("^v0\\.\\d+\\.\\d+$"))] | first')
+          echo "Latest collector contrib v0 tag: $LATEST_CONTRIB_V0"
+
+          CORE_V0_CHANGED="false"
+          CORE_V1_CHANGED="false"
+          CONTRIB_V0_CHANGED="false"
+
+          if [ "$LATEST_CORE_V0" != "$CURRENT_CORE_V0" ]; then
+            CORE_V0_CHANGED="true"
+          fi
+          if [ "$LATEST_CORE_V1" != "$CURRENT_CORE_V1" ]; then
+            CORE_V1_CHANGED="true"
+          fi
+          if [ "$LATEST_CONTRIB_V0" != "$CURRENT_CONTRIB_V0" ]; then
+            CONTRIB_V0_CHANGED="true"
+          fi
+
+          if [ "$CORE_V0_CHANGED" == "true" ] || [ "$CORE_V1_CHANGED" == "true" ] || [ "$CONTRIB_V0_CHANGED" == "true" ]; then
+            echo "updated=true" >> "$GITHUB_OUTPUT"
+            echo "new_core_v0=$LATEST_CORE_V0" >> "$GITHUB_OUTPUT"
+            echo "new_core_v1=$LATEST_CORE_V1" >> "$GITHUB_OUTPUT"
+            echo "new_contrib_v0=$LATEST_CONTRIB_V0" >> "$GITHUB_OUTPUT"
+            echo "Updates available:"
+            echo "  Core v0: $CURRENT_CORE_V0 -> $LATEST_CORE_V0 (changed: $CORE_V0_CHANGED)"
+            echo "  Core v1: $CURRENT_CORE_V1 -> $LATEST_CORE_V1 (changed: $CORE_V1_CHANGED)"
+            echo "  Contrib v0: $CURRENT_CONTRIB_V0 -> $LATEST_CONTRIB_V0 (changed: $CONTRIB_V0_CHANGED)"
+          else
+            echo "updated=false" >> "$GITHUB_OUTPUT"
+            echo "OTel Collector is up to date"
+          fi
+
+  check-honeycomb-deps:
+    name: Check Honeycomb Dependency Updates
+    runs-on: ubuntu-latest
+    outputs:
+      s3_exporter_updated: ${{ steps.s3_exporter.outputs.updated }}
+      s3_exporter_version: ${{ steps.s3_exporter.outputs.version }}
+      symbolicator_sourcemap_updated: ${{ steps.symbolicator_sourcemap.outputs.updated }}
+      symbolicator_sourcemap_version: ${{ steps.symbolicator_sourcemap.outputs.version }}
+      symbolicator_dsym_updated: ${{ steps.symbolicator_dsym.outputs.updated }}
+      symbolicator_dsym_version: ${{ steps.symbolicator_dsym.outputs.version }}
+      symbolicator_proguard_updated: ${{ steps.symbolicator_proguard.outputs.updated }}
+      symbolicator_proguard_version: ${{ steps.symbolicator_proguard.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check enhance-indexing-s3-exporter
+        id: s3_exporter
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          CURRENT=$(grep 'enhance-indexing-s3-exporter' builder-config.yaml | grep -oP 'v[\d.]+')
+          echo "Current s3-exporter version: $CURRENT"
+
+          LATEST=$(gh api repos/honeycombio/enhance-indexing-s3-exporter/releases/latest --jq '.tag_name' 2>/dev/null || echo "")
+          if [ -z "$LATEST" ]; then
+            LATEST=$(gh api repos/honeycombio/enhance-indexing-s3-exporter/tags --jq '.[0].name' 2>/dev/null || echo "$CURRENT")
+          fi
+          echo "Latest s3-exporter version: $LATEST"
+
+          if [ "$LATEST" != "$CURRENT" ] && [ -n "$LATEST" ]; then
+            echo "updated=true" >> "$GITHUB_OUTPUT"
+            echo "version=$LATEST" >> "$GITHUB_OUTPUT"
+          else
+            echo "updated=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Check symbolicator/sourcemapprocessor
+        id: symbolicator_sourcemap
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          CURRENT=$(grep 'symbolicator/sourcemapprocessor' builder-config.yaml | grep -oP 'v[\d.]+')
+          echo "Current sourcemapprocessor version: $CURRENT"
+
+          LATEST=$(gh api repos/honeycombio/opentelemetry-collector-symbolicator/tags --jq '[.[].name | select(startswith("sourcemapprocessor/"))] | first' 2>/dev/null || echo "")
+          if [ -n "$LATEST" ]; then
+            LATEST=$(echo "$LATEST" | sed 's|sourcemapprocessor/||')
+          else
+            LATEST="$CURRENT"
+          fi
+          echo "Latest sourcemapprocessor version: $LATEST"
+
+          if [ "$LATEST" != "$CURRENT" ]; then
+            echo "updated=true" >> "$GITHUB_OUTPUT"
+            echo "version=$LATEST" >> "$GITHUB_OUTPUT"
+          else
+            echo "updated=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Check symbolicator/dsymprocessor
+        id: symbolicator_dsym
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          CURRENT=$(grep 'symbolicator/dsymprocessor' builder-config.yaml | grep -oP 'v[\d.]+')
+          echo "Current dsymprocessor version: $CURRENT"
+
+          LATEST=$(gh api repos/honeycombio/opentelemetry-collector-symbolicator/tags --jq '[.[].name | select(startswith("dsymprocessor/"))] | first' 2>/dev/null || echo "")
+          if [ -n "$LATEST" ]; then
+            LATEST=$(echo "$LATEST" | sed 's|dsymprocessor/||')
+          else
+            LATEST="$CURRENT"
+          fi
+          echo "Latest dsymprocessor version: $LATEST"
+
+          if [ "$LATEST" != "$CURRENT" ]; then
+            echo "updated=true" >> "$GITHUB_OUTPUT"
+            echo "version=$LATEST" >> "$GITHUB_OUTPUT"
+          else
+            echo "updated=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Check symbolicator/proguardprocessor
+        id: symbolicator_proguard
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          CURRENT=$(grep 'symbolicator/proguardprocessor' builder-config.yaml | grep -oP 'v[\d.]+')
+          echo "Current proguardprocessor version: $CURRENT"
+
+          LATEST=$(gh api repos/honeycombio/opentelemetry-collector-symbolicator/tags --jq '[.[].name | select(startswith("proguardprocessor/"))] | first' 2>/dev/null || echo "")
+          if [ -n "$LATEST" ]; then
+            LATEST=$(echo "$LATEST" | sed 's|proguardprocessor/||')
+          else
+            LATEST="$CURRENT"
+          fi
+          echo "Latest proguardprocessor version: $LATEST"
+
+          if [ "$LATEST" != "$CURRENT" ]; then
+            echo "updated=true" >> "$GITHUB_OUTPUT"
+            echo "version=$LATEST" >> "$GITHUB_OUTPUT"
+          else
+            echo "updated=false" >> "$GITHUB_OUTPUT"
+          fi
+
+  create-otel-pr:
+    name: Create OTel Collector Update PR
+    needs: check-otel-collector
+    if: needs.check-otel-collector.outputs.updated == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Update versions and create PR
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NEW_CORE_V0: ${{ needs.check-otel-collector.outputs.new_core_v0 }}
+          NEW_CORE_V1: ${{ needs.check-otel-collector.outputs.new_core_v1 }}
+          NEW_CONTRIB_V0: ${{ needs.check-otel-collector.outputs.new_contrib_v0 }}
+        run: |
+          # Get current versions
+          CURRENT_CORE_V0=$(grep -m1 'go.opentelemetry.io/collector/exporter/' builder-config.yaml | grep -oP 'v0\.\d+\.\d+')
+          CURRENT_CORE_V1=$(grep -m1 'go.opentelemetry.io/collector/confmap/provider/' builder-config.yaml | grep -oP 'v1\.\d+\.\d+')
+          CURRENT_CONTRIB_V0=$(grep -m1 'opentelemetry-collector-contrib/' builder-config.yaml | grep -oP 'v0\.\d+\.\d+')
+
+          echo "Core v0: $CURRENT_CORE_V0 -> $NEW_CORE_V0"
+          echo "Core v1: $CURRENT_CORE_V1 -> $NEW_CORE_V1"
+          echo "Contrib v0: $CURRENT_CONTRIB_V0 -> $NEW_CONTRIB_V0"
+
+          BRANCH="auto/bump-otel-collector-${NEW_CORE_V1}-${NEW_CORE_V0}"
+          TITLE="maint: bump collector libs to ${NEW_CORE_V1}/${NEW_CORE_V0}"
+
+          # Check if a PR already exists for this update
+          EXISTING_PR=$(gh pr list --head "$BRANCH" --json number --jq '.[0].number' 2>/dev/null || echo "")
+          if [ -n "$EXISTING_PR" ]; then
+            echo "PR #$EXISTING_PR already exists for branch $BRANCH, skipping."
+            exit 0
+          fi
+
+          # Create branch and apply changes
+          git checkout -b "$BRANCH"
+
+          # Update core v0.x versions (go.opentelemetry.io/collector/... modules + builder)
+          # Use targeted replacements to avoid touching contrib or honeycomb lines
+          sed -i "/go\.opentelemetry\.io\/collector\//s|${CURRENT_CORE_V0}|${NEW_CORE_V0}|g" builder-config.yaml
+          sed -i "s|builder@${CURRENT_CORE_V0}|builder@${NEW_CORE_V0}|g" Makefile
+
+          # Update core v1.x versions (confmap providers)
+          sed -i "/go\.opentelemetry\.io\/collector\/confmap/s|${CURRENT_CORE_V1}|${NEW_CORE_V1}|g" builder-config.yaml
+
+          # Update contrib v0.x versions (opentelemetry-collector-contrib modules)
+          sed -i "/opentelemetry-collector-contrib\//s|${CURRENT_CONTRIB_V0}|${NEW_CONTRIB_V0}|g" builder-config.yaml
+
+          echo "Updated files:"
+          git diff
+
+          # Commit and push
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add builder-config.yaml Makefile
+          git commit -m "$TITLE"
+          git push origin "$BRANCH"
+
+          # Create the PR
+          gh pr create \
+            --title "$TITLE" \
+            --body "$(cat <<EOF
+          ## Automated Dependency Update
+
+          Bumps OTel Collector libraries:
+          - Core modules: \`${NEW_CORE_V0}\`
+          - Confmap providers: \`${NEW_CORE_V1}\`
+          - Collector Contrib modules: \`${NEW_CONTRIB_V0}\`
+          - Builder: \`${NEW_CORE_V0}\`
+
+          ## How to verify
+
+          \`\`\`
+          make build
+          \`\`\`
+
+          ---
+          *This PR was created automatically by the dependency update workflow.*
+          EOF
+          )" \
+            --label "type: dependencies"
+
+  create-honeycomb-pr:
+    name: Create Honeycomb Dependency Update PR
+    needs: check-honeycomb-deps
+    if: |
+      needs.check-honeycomb-deps.outputs.s3_exporter_updated == 'true' ||
+      needs.check-honeycomb-deps.outputs.symbolicator_sourcemap_updated == 'true' ||
+      needs.check-honeycomb-deps.outputs.symbolicator_dsym_updated == 'true' ||
+      needs.check-honeycomb-deps.outputs.symbolicator_proguard_updated == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Update versions and create PR
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          S3_UPDATED: ${{ needs.check-honeycomb-deps.outputs.s3_exporter_updated }}
+          S3_VERSION: ${{ needs.check-honeycomb-deps.outputs.s3_exporter_version }}
+          SOURCEMAP_UPDATED: ${{ needs.check-honeycomb-deps.outputs.symbolicator_sourcemap_updated }}
+          SOURCEMAP_VERSION: ${{ needs.check-honeycomb-deps.outputs.symbolicator_sourcemap_version }}
+          DSYM_UPDATED: ${{ needs.check-honeycomb-deps.outputs.symbolicator_dsym_updated }}
+          DSYM_VERSION: ${{ needs.check-honeycomb-deps.outputs.symbolicator_dsym_version }}
+          PROGUARD_UPDATED: ${{ needs.check-honeycomb-deps.outputs.symbolicator_proguard_updated }}
+          PROGUARD_VERSION: ${{ needs.check-honeycomb-deps.outputs.symbolicator_proguard_version }}
+        run: |
+          BRANCH="auto/bump-honeycomb-deps"
+          TITLE="maint: bump Honeycomb dependencies"
+
+          # Check if a PR already exists
+          EXISTING_PR=$(gh pr list --head "$BRANCH" --json number --jq '.[0].number' 2>/dev/null || echo "")
+          if [ -n "$EXISTING_PR" ]; then
+            echo "PR #$EXISTING_PR already exists for branch $BRANCH, skipping."
+            exit 0
+          fi
+
+          git checkout -b "$BRANCH"
+
+          UPDATES=""
+
+          if [ "$S3_UPDATED" == "true" ]; then
+            CURRENT=$(grep 'enhance-indexing-s3-exporter' builder-config.yaml | grep -oP 'v[\d.]+')
+            sed -i "s|enhance-indexing-s3-exporter/enhanceindexings3exporter ${CURRENT}|enhance-indexing-s3-exporter/enhanceindexings3exporter ${S3_VERSION}|g" builder-config.yaml
+            UPDATES="${UPDATES}- enhance-indexing-s3-exporter: \`${S3_VERSION}\`\n"
+          fi
+
+          if [ "$SOURCEMAP_UPDATED" == "true" ]; then
+            CURRENT=$(grep 'symbolicator/sourcemapprocessor' builder-config.yaml | grep -oP 'v[\d.]+')
+            sed -i "s|symbolicator/sourcemapprocessor ${CURRENT}|symbolicator/sourcemapprocessor ${SOURCEMAP_VERSION}|g" builder-config.yaml
+            UPDATES="${UPDATES}- sourcemapprocessor: \`${SOURCEMAP_VERSION}\`\n"
+          fi
+
+          if [ "$DSYM_UPDATED" == "true" ]; then
+            CURRENT=$(grep 'symbolicator/dsymprocessor' builder-config.yaml | grep -oP 'v[\d.]+')
+            sed -i "s|symbolicator/dsymprocessor ${CURRENT}|symbolicator/dsymprocessor ${DSYM_VERSION}|g" builder-config.yaml
+            UPDATES="${UPDATES}- dsymprocessor: \`${DSYM_VERSION}\`\n"
+          fi
+
+          if [ "$PROGUARD_UPDATED" == "true" ]; then
+            CURRENT=$(grep 'symbolicator/proguardprocessor' builder-config.yaml | grep -oP 'v[\d.]+')
+            sed -i "s|symbolicator/proguardprocessor ${CURRENT}|symbolicator/proguardprocessor ${PROGUARD_VERSION}|g" builder-config.yaml
+            UPDATES="${UPDATES}- proguardprocessor: \`${PROGUARD_VERSION}\`\n"
+          fi
+
+          echo "Updated files:"
+          git diff
+
+          # Commit and push
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add builder-config.yaml
+          git commit -m "$TITLE"
+          git push origin "$BRANCH"
+
+          # Create the PR
+          gh pr create \
+            --title "$TITLE" \
+            --body "$(cat <<EOF
+          ## Automated Dependency Update
+
+          Updates Honeycomb dependencies:
+          $(echo -e "$UPDATES")
+
+          ## How to verify
+
+          \`\`\`
+          make build
+          \`\`\`
+
+          ---
+          *This PR was created automatically by the dependency update workflow.*
+          EOF
+          )" \
+            --label "type: dependencies"
