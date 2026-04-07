@@ -19,11 +19,15 @@ jobs:
       new_core_v0: ${{ steps.check.outputs.new_core_v0 }}
       new_core_v1: ${{ steps.check.outputs.new_core_v1 }}
       new_contrib_v0: ${{ steps.check.outputs.new_contrib_v0 }}
+      go_updated: ${{ steps.check.outputs.go_updated }}
+      new_go_minor: ${{ steps.check.outputs.new_go_minor }}
     steps:
       - uses: actions/checkout@v4
 
       - name: Check for OTel Collector updates
         id: check
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           # Get current versions from builder-config.yaml
           CURRENT_CORE_V0=$(grep -m1 'go.opentelemetry.io/collector/exporter/' builder-config.yaml | grep -oP 'v0\.\d+\.\d+')
@@ -32,6 +36,10 @@ jobs:
           echo "Current collector core v0: $CURRENT_CORE_V0"
           echo "Current collector core v1: $CURRENT_CORE_V1"
           echo "Current collector contrib v0: $CURRENT_CONTRIB_V0"
+
+          # Get current Go major.minor from Dockerfile
+          CURRENT_GO_MINOR=$(grep -oP '(?<=FROM golang:)\d+\.\d+' Dockerfile)
+          echo "Current Go version in Dockerfile: $CURRENT_GO_MINOR"
 
           # Query the Go module proxy for latest stable versions
           # The /@latest endpoint returns only stable releases, skipping pre-release/beta/RC versions
@@ -43,6 +51,11 @@ jobs:
 
           LATEST_CONTRIB_V0=$(curl -sf 'https://proxy.golang.org/github.com/open-telemetry/opentelemetry-collector-contrib/exporter/fileexporter/@latest' | jq -r '.Version')
           echo "Latest collector contrib v0 (from Go proxy): $LATEST_CONTRIB_V0"
+
+          # Check the Go version from the collector's go.mod (major.minor only)
+          UPSTREAM_GO=$(gh api repos/open-telemetry/opentelemetry-collector/contents/go.mod --jq '.content' \
+            | base64 -d | grep -oP '(?<=^go )\d+\.\d+' | head -1)
+          echo "Upstream collector Go version: $UPSTREAM_GO"
 
           CORE_V0_CHANGED="false"
           CORE_V1_CHANGED="false"
@@ -58,7 +71,12 @@ jobs:
             CONTRIB_V0_CHANGED="true"
           fi
 
-          if [ "$CORE_V0_CHANGED" == "true" ] || [ "$CORE_V1_CHANGED" == "true" ] || [ "$CONTRIB_V0_CHANGED" == "true" ]; then
+          GO_CHANGED="false"
+          if [ "$UPSTREAM_GO" != "$CURRENT_GO_MINOR" ]; then
+            GO_CHANGED="true"
+          fi
+
+          if [ "$CORE_V0_CHANGED" == "true" ] || [ "$CORE_V1_CHANGED" == "true" ] || [ "$CONTRIB_V0_CHANGED" == "true" ] || [ "$GO_CHANGED" == "true" ]; then
             echo "updated=true" >> "$GITHUB_OUTPUT"
             echo "new_core_v0=$LATEST_CORE_V0" >> "$GITHUB_OUTPUT"
             echo "new_core_v1=$LATEST_CORE_V1" >> "$GITHUB_OUTPUT"
@@ -67,9 +85,17 @@ jobs:
             echo "  Core v0: $CURRENT_CORE_V0 -> $LATEST_CORE_V0 (changed: $CORE_V0_CHANGED)"
             echo "  Core v1: $CURRENT_CORE_V1 -> $LATEST_CORE_V1 (changed: $CORE_V1_CHANGED)"
             echo "  Contrib v0: $CURRENT_CONTRIB_V0 -> $LATEST_CONTRIB_V0 (changed: $CONTRIB_V0_CHANGED)"
+            echo "  Go: $CURRENT_GO_MINOR -> $UPSTREAM_GO (changed: $GO_CHANGED)"
           else
             echo "updated=false" >> "$GITHUB_OUTPUT"
             echo "OTel Collector is up to date"
+          fi
+
+          if [ "$GO_CHANGED" == "true" ]; then
+            echo "go_updated=true" >> "$GITHUB_OUTPUT"
+            echo "new_go_minor=$UPSTREAM_GO" >> "$GITHUB_OUTPUT"
+          else
+            echo "go_updated=false" >> "$GITHUB_OUTPUT"
           fi
 
   check-honeycomb-deps:
@@ -165,6 +191,8 @@ jobs:
           NEW_CORE_V0: ${{ needs.check-otel-collector.outputs.new_core_v0 }}
           NEW_CORE_V1: ${{ needs.check-otel-collector.outputs.new_core_v1 }}
           NEW_CONTRIB_V0: ${{ needs.check-otel-collector.outputs.new_contrib_v0 }}
+          GO_UPDATED: ${{ needs.check-otel-collector.outputs.go_updated }}
+          NEW_GO_MINOR: ${{ needs.check-otel-collector.outputs.new_go_minor }}
         run: |
           # Get current versions
           CURRENT_CORE_V0=$(grep -m1 'go.opentelemetry.io/collector/exporter/' builder-config.yaml | grep -oP 'v0\.\d+\.\d+')
@@ -199,13 +227,22 @@ jobs:
           # Update contrib v0.x versions (opentelemetry-collector-contrib modules)
           sed -i "/opentelemetry-collector-contrib\//s|${CURRENT_CONTRIB_V0}|${NEW_CONTRIB_V0}|g" builder-config.yaml
 
+          # Update Go version in Dockerfile if changed
+          GO_BODY_LINE=""
+          if [ "$GO_UPDATED" == "true" ]; then
+            CURRENT_GO_MINOR=$(grep -oP '(?<=FROM golang:)\d+\.\d+' Dockerfile)
+            sed -i "s|FROM golang:${CURRENT_GO_MINOR}|FROM golang:${NEW_GO_MINOR}|g" Dockerfile
+            echo "Go version: $CURRENT_GO_MINOR -> $NEW_GO_MINOR"
+            GO_BODY_LINE="- Go version (Dockerfile): \`${CURRENT_GO_MINOR}\` → \`${NEW_GO_MINOR}\`"
+          fi
+
           echo "Updated files:"
           git diff
 
           # Commit and push
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add builder-config.yaml Makefile
+          git add builder-config.yaml Makefile Dockerfile
           git commit -m "$TITLE"
           git push origin "$BRANCH"
 
@@ -220,6 +257,7 @@ jobs:
           - Confmap providers: \`${NEW_CORE_V1}\`
           - Collector Contrib modules: \`${NEW_CONTRIB_V0}\`
           - Builder: \`${NEW_CORE_V0}\`
+          ${GO_BODY_LINE}
 
           ## How to verify
 
