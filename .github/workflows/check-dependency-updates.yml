@@ -6,14 +6,12 @@ on:
     - cron: "0 14 * * *"
   workflow_dispatch: {}
 
-permissions:
-  contents: write
-  pull-requests: write
-
 jobs:
   check-otel-collector:
     name: Check OTel Collector Updates
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     outputs:
       updated: ${{ steps.check.outputs.updated }}
       new_core_v0: ${{ steps.check.outputs.new_core_v0 }}
@@ -61,18 +59,18 @@ jobs:
           CORE_V1_CHANGED="false"
           CONTRIB_V0_CHANGED="false"
 
-          if [ "$LATEST_CORE_V0" != "$CURRENT_CORE_V0" ]; then
+          if [ "$LATEST_CORE_V0" != "$CURRENT_CORE_V0" ] && [ -n "$LATEST_CORE_V0" ] && [ "$LATEST_CORE_V0" != "null" ]; then
             CORE_V0_CHANGED="true"
           fi
-          if [ "$LATEST_CORE_V1" != "$CURRENT_CORE_V1" ]; then
+          if [ "$LATEST_CORE_V1" != "$CURRENT_CORE_V1" ] && [ -n "$LATEST_CORE_V1" ] && [ "$LATEST_CORE_V1" != "null" ]; then
             CORE_V1_CHANGED="true"
           fi
-          if [ "$LATEST_CONTRIB_V0" != "$CURRENT_CONTRIB_V0" ]; then
+          if [ "$LATEST_CONTRIB_V0" != "$CURRENT_CONTRIB_V0" ] && [ -n "$LATEST_CONTRIB_V0" ] && [ "$LATEST_CONTRIB_V0" != "null" ]; then
             CONTRIB_V0_CHANGED="true"
           fi
 
           GO_CHANGED="false"
-          if [ "$UPSTREAM_GO" != "$CURRENT_GO_MINOR" ]; then
+          if [ "$UPSTREAM_GO" != "$CURRENT_GO_MINOR" ] && [ -n "$UPSTREAM_GO" ]; then
             GO_CHANGED="true"
           fi
 
@@ -101,6 +99,8 @@ jobs:
   check-honeycomb-deps:
     name: Check Honeycomb Dependency Updates
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     outputs:
       s3_exporter_updated: ${{ steps.s3_exporter.outputs.updated }}
       s3_exporter_version: ${{ steps.s3_exporter.outputs.version }}
@@ -182,6 +182,9 @@ jobs:
     needs: check-otel-collector
     if: needs.check-otel-collector.outputs.updated == 'true'
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
     steps:
       - uses: actions/checkout@v4
 
@@ -244,7 +247,7 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add builder-config.yaml Makefile Dockerfile
           git commit -m "$TITLE"
-          git push origin "$BRANCH"
+          git push --force-with-lease origin "$BRANCH"
 
           # Create the PR
           gh pr create \
@@ -274,6 +277,9 @@ jobs:
   create-honeycomb-pr:
     name: Create Honeycomb Dependency Update PR
     needs: check-honeycomb-deps
+    permissions:
+      contents: write
+      pull-requests: write
     if: |
       needs.check-honeycomb-deps.outputs.s3_exporter_updated == 'true' ||
       needs.check-honeycomb-deps.outputs.symbolicator_sourcemap_updated == 'true' ||
@@ -295,8 +301,24 @@ jobs:
           PROGUARD_UPDATED: ${{ needs.check-honeycomb-deps.outputs.symbolicator_proguard_updated }}
           PROGUARD_VERSION: ${{ needs.check-honeycomb-deps.outputs.symbolicator_proguard_version }}
         run: |
-          BRANCH="auto/bump-honeycomb-deps"
           TITLE="maint: bump Honeycomb dependencies"
+          UPDATES=""
+          BRANCH_SUFFIX=""
+
+          if [ "$S3_UPDATED" == "true" ]; then
+            BRANCH_SUFFIX="${BRANCH_SUFFIX}-s3-exporter-${S3_VERSION}"
+          fi
+          if [ "$SOURCEMAP_UPDATED" == "true" ]; then
+            BRANCH_SUFFIX="${BRANCH_SUFFIX}-sourcemap-${SOURCEMAP_VERSION}"
+          fi
+          if [ "$DSYM_UPDATED" == "true" ]; then
+            BRANCH_SUFFIX="${BRANCH_SUFFIX}-dsym-${DSYM_VERSION}"
+          fi
+          if [ "$PROGUARD_UPDATED" == "true" ]; then
+            BRANCH_SUFFIX="${BRANCH_SUFFIX}-proguard-${PROGUARD_VERSION}"
+          fi
+
+          BRANCH="auto/bump${BRANCH_SUFFIX}"
 
           # Check if a PR already exists
           EXISTING_PR=$(gh pr list --head "$BRANCH" --json number --jq '.[0].number' 2>/dev/null || echo "")
@@ -306,8 +328,6 @@ jobs:
           fi
 
           git checkout -b "$BRANCH"
-
-          UPDATES=""
 
           if [ "$S3_UPDATED" == "true" ]; then
             CURRENT=$(grep 'enhance-indexing-s3-exporter' builder-config.yaml | grep -oP 'v[\d.]+')
@@ -341,7 +361,7 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add builder-config.yaml
           git commit -m "$TITLE"
-          git push origin "$BRANCH"
+          git push --force-with-lease origin "$BRANCH"
 
           # Create the PR
           gh pr create \
