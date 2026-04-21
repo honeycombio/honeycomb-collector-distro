@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+## v0.0.29 [beta] - 2026-04-20
+
+### 🛠️ Maintenance
+
+- maint: bump collector libs to v1.56.0/v0.150.0 (#76) | @tdarwin
+
+### 🤖 CI
+
+- ci: add automated dependency update workflow (#75) | @tdarwin
+
 ## v0.0.28 [beta] - 2026-04-07
 
 ### 🛠️ Maintenance
