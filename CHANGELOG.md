@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+## v0.0.30 [beta] - 2026-05-07
+
+### 🛠️ Maintenance
+
+- maint: bump collector libs to v1.57.0/v0.151.0 (#80) | @tdarwin
+- maint: bump enhance-indexing-s3-exporter to v0.0.17 (#79) | @tdarwin
+- maint: update CODEOWNERS to field-reliability-engineering (#82) | @tdarwin
+
 ## v0.0.29 [beta] - 2026-04-20
 
 ### 🛠️ Maintenance
