@@ -190,7 +190,7 @@ jobs:
 
       - name: Update versions and create PR
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GHA_PR_TOKEN }}
           NEW_CORE_V0: ${{ needs.check-otel-collector.outputs.new_core_v0 }}
           NEW_CORE_V1: ${{ needs.check-otel-collector.outputs.new_core_v1 }}
           NEW_CONTRIB_V0: ${{ needs.check-otel-collector.outputs.new_contrib_v0 }}
@@ -291,7 +291,7 @@ jobs:
 
       - name: Update versions and create PR
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GHA_PR_TOKEN }}
           S3_UPDATED: ${{ needs.check-honeycomb-deps.outputs.s3_exporter_updated }}
           S3_VERSION: ${{ needs.check-honeycomb-deps.outputs.s3_exporter_version }}
           SOURCEMAP_UPDATED: ${{ needs.check-honeycomb-deps.outputs.symbolicator_sourcemap_updated }}
