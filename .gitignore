@@ -1,2 +1,3 @@
 bin/
 .idea
+.claude/settings.local.json
