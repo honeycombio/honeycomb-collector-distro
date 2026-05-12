@@ -22,6 +22,7 @@ processors:
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/metricstransformprocessor v0.152.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/transformprocessor v0.152.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourcedetectionprocessor v0.152.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/drainprocessor v0.152.0
   - gomod: github.com/honeycombio/opentelemetry-collector-symbolicator/sourcemapprocessor v1.0.3
   - gomod: github.com/honeycombio/opentelemetry-collector-symbolicator/dsymprocessor v1.0.2
   - gomod: github.com/honeycombio/opentelemetry-collector-symbolicator/proguardprocessor v1.0.1
