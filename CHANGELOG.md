@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+## v0.0.31 [beta] - 2026-05-12
+
+### ✨ Features
+
+- feat: add drain processor (#85) | @tdarwin
+
+### 🛠️ Maintenance
+
+- maint: bump collector libs to v1.58.0/v0.152.0 (#84) | @tdarwin
+
 ## v0.0.30 [beta] - 2026-05-07
 
 ### 🛠️ Maintenance
