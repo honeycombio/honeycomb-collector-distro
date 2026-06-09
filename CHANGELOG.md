@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## v0.0.33 [beta] - 2026-06-09
+
+### 🛠️ Maintenance
+
+- maint: bump Honeycomb dependencies (#91) | @tdarwin
+- maint: bump collector libs to v1.60.0/v0.154.0 (#92) | @tdarwin
+
 ## v0.0.32 [beta] - 2026-05-27
 
 ### 🛠️ Maintenance
