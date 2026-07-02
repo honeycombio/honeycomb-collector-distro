@@ -2,6 +2,18 @@
 
 ## Unreleased
 
+## v0.0.34 [beta] - 2026-07-02
+
+### ✨ Features
+
+- feat: add basicauthextension, redactionprocessor, and resourceprocessor components (#99) | @invlol
+
+### 🛠️ Maintenance
+
+- maint: bump Honeycomb dependencies (#95) | @tdarwin
+- maint: bump collector libs to v1.61.0/v0.155.0 (#97) | @tdarwin
+- maint: bump Honeycomb dependencies (#98) | @tdarwin
+
 ## v0.0.33 [beta] - 2026-06-09
 
 ### 🛠️ Maintenance
