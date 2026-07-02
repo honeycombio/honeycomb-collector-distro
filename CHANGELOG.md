@@ -10,11 +10,9 @@
 
 ### 🛠️ Maintenance
 
-- maint: bump collector libs to v1.61.0/v0.155.0 (#96) | @tdarwin
 - maint: bump Honeycomb dependencies (#95) | @tdarwin
 - maint: bump collector libs to v1.61.0/v0.155.0 (#97) | @tdarwin
 - maint: bump Honeycomb dependencies (#98) | @tdarwin
-- chore(codeowners): update Agent O11y and LLM O11y teams (#94) | @benhanzl
 
 ## v0.0.33 [beta] - 2026-06-09
 
