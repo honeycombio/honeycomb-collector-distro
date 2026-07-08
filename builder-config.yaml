@@ -25,7 +25,7 @@ processors:
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourcedetectionprocessor v0.156.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourceprocessor v0.156.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/drainprocessor v0.156.0
-  - gomod: github.com/honeycombio/opentelemetry-collector-symbolicator/sourcemapprocessor v1.0.3
+  - gomod: github.com/honeycombio/opentelemetry-collector-symbolicator/sourcemapprocessor v1.0.4
   - gomod: github.com/honeycombio/opentelemetry-collector-symbolicator/dsymprocessor v1.0.2
   - gomod: github.com/honeycombio/opentelemetry-collector-symbolicator/proguardprocessor v1.0.1
 
