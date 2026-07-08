@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## v0.0.35 [beta] - 2026-07-08
+
+### 🛠️ Maintenance
+
+- maint: bump collector libs to v1.62.0/v0.156.0 (#101) | @tdarwin
+- maint: bump sourcemapprocessor to v1.0.4 (#103) | @robbkidd
+
 ## v0.0.34 [beta] - 2026-07-02
 
 ### ✨ Features
