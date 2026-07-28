@@ -64,3 +64,4 @@ docker run \
 | Extension      | headerssetterextension | [headerssetterextension](https://pkg.go.dev/github.com/open-telemetry/opentelemetry-collector-contrib/extension/headerssetterextension) |
 | Extension      | healthcheckextension | [healthcheckextension](https://pkg.go.dev/github.com/open-telemetry/opentelemetry-collector-contrib/extension/healthcheckextension) |
 | Extension      | pprofextension | [pprofextension](https://pkg.go.dev/github.com/open-telemetry/opentelemetry-collector-contrib/extension/pprofextension) |
+| Extension      | honeycombauthextension | [honeycombauthextension](https://pkg.go.dev/github.com/honeycombio/honeycomb-auth-extension/honeycombauthextension) |

@@ -104,6 +104,8 @@ jobs:
     outputs:
       s3_exporter_updated: ${{ steps.s3_exporter.outputs.updated }}
       s3_exporter_version: ${{ steps.s3_exporter.outputs.version }}
+      auth_extension_updated: ${{ steps.auth_extension.outputs.updated }}
+      auth_extension_version: ${{ steps.auth_extension.outputs.version }}
       symbolicator_sourcemap_updated: ${{ steps.symbolicator_sourcemap.outputs.updated }}
       symbolicator_sourcemap_version: ${{ steps.symbolicator_sourcemap.outputs.version }}
       symbolicator_dsym_updated: ${{ steps.symbolicator_dsym.outputs.updated }}
@@ -121,6 +123,22 @@ jobs:
 
           LATEST=$(curl -sf 'https://proxy.golang.org/github.com/honeycombio/enhance-indexing-s3-exporter/enhanceindexings3exporter/@latest' | jq -r '.Version')
           echo "Latest s3-exporter version (from Go proxy): $LATEST"
+
+          if [ "$LATEST" != "$CURRENT" ] && [ -n "$LATEST" ] && [ "$LATEST" != "null" ]; then
+            echo "updated=true" >> "$GITHUB_OUTPUT"
+            echo "version=$LATEST" >> "$GITHUB_OUTPUT"
+          else
+            echo "updated=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Check honeycomb-auth-extension
+        id: auth_extension
+        run: |
+          CURRENT=$(grep 'honeycomb-auth-extension' builder-config.yaml | grep -oP 'v[\d.]+')
+          echo "Current honeycombauthextension version: $CURRENT"
+
+          LATEST=$(curl -sf 'https://proxy.golang.org/github.com/honeycombio/honeycomb-auth-extension/honeycombauthextension/@latest' | jq -r '.Version')
+          echo "Latest honeycombauthextension version (from Go proxy): $LATEST"
 
           if [ "$LATEST" != "$CURRENT" ] && [ -n "$LATEST" ] && [ "$LATEST" != "null" ]; then
             echo "updated=true" >> "$GITHUB_OUTPUT"
@@ -282,6 +300,7 @@ jobs:
       pull-requests: write
     if: |
       needs.check-honeycomb-deps.outputs.s3_exporter_updated == 'true' ||
+      needs.check-honeycomb-deps.outputs.auth_extension_updated == 'true' ||
       needs.check-honeycomb-deps.outputs.symbolicator_sourcemap_updated == 'true' ||
       needs.check-honeycomb-deps.outputs.symbolicator_dsym_updated == 'true' ||
       needs.check-honeycomb-deps.outputs.symbolicator_proguard_updated == 'true'
@@ -294,6 +313,8 @@ jobs:
           GH_TOKEN: ${{ secrets.GHA_PR_TOKEN }}
           S3_UPDATED: ${{ needs.check-honeycomb-deps.outputs.s3_exporter_updated }}
           S3_VERSION: ${{ needs.check-honeycomb-deps.outputs.s3_exporter_version }}
+          AUTH_EXT_UPDATED: ${{ needs.check-honeycomb-deps.outputs.auth_extension_updated }}
+          AUTH_EXT_VERSION: ${{ needs.check-honeycomb-deps.outputs.auth_extension_version }}
           SOURCEMAP_UPDATED: ${{ needs.check-honeycomb-deps.outputs.symbolicator_sourcemap_updated }}
           SOURCEMAP_VERSION: ${{ needs.check-honeycomb-deps.outputs.symbolicator_sourcemap_version }}
           DSYM_UPDATED: ${{ needs.check-honeycomb-deps.outputs.symbolicator_dsym_updated }}
@@ -307,6 +328,9 @@ jobs:
 
           if [ "$S3_UPDATED" == "true" ]; then
             BRANCH_SUFFIX="${BRANCH_SUFFIX}-s3-exporter-${S3_VERSION}"
+          fi
+          if [ "$AUTH_EXT_UPDATED" == "true" ]; then
+            BRANCH_SUFFIX="${BRANCH_SUFFIX}-auth-extension-${AUTH_EXT_VERSION}"
           fi
           if [ "$SOURCEMAP_UPDATED" == "true" ]; then
             BRANCH_SUFFIX="${BRANCH_SUFFIX}-sourcemap-${SOURCEMAP_VERSION}"
@@ -333,6 +357,12 @@ jobs:
             CURRENT=$(grep 'enhance-indexing-s3-exporter' builder-config.yaml | grep -oP 'v[\d.]+')
             sed -i "s|enhance-indexing-s3-exporter/enhanceindexings3exporter ${CURRENT}|enhance-indexing-s3-exporter/enhanceindexings3exporter ${S3_VERSION}|g" builder-config.yaml
             UPDATES="${UPDATES}- enhance-indexing-s3-exporter: \`${S3_VERSION}\`\n"
+          fi
+
+          if [ "$AUTH_EXT_UPDATED" == "true" ]; then
+            CURRENT=$(grep 'honeycomb-auth-extension' builder-config.yaml | grep -oP 'v[\d.]+')
+            sed -i "s|honeycomb-auth-extension/honeycombauthextension ${CURRENT}|honeycomb-auth-extension/honeycombauthextension ${AUTH_EXT_VERSION}|g" builder-config.yaml
+            UPDATES="${UPDATES}- honeycombauthextension: \`${AUTH_EXT_VERSION}\`\n"
           fi
 
           if [ "$SOURCEMAP_UPDATED" == "true" ]; then
