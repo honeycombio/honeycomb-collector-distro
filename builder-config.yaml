@@ -60,4 +60,4 @@ extensions:
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/headerssetterextension v0.157.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/healthcheckextension v0.157.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/pprofextension v0.157.0
-  - gomod: github.com/honeycombio/honeycomb-auth-extension/honeycombauthextension v0.2.0
+  - gomod: github.com/honeycombio/honeycomb-auth-extension/honeycombauthextension v0.2.1
