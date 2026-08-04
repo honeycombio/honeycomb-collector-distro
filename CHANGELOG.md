@@ -2,6 +2,19 @@
 
 ## Unreleased
 
+## v0.0.37 [beta] - 2026-08-04
+
+### ✨ Features
+
+- feat: add honeycomb_auth extension (#107) | @MikeGoldsmith
+- feat: request add routing connector (#111) | @stratospal
+
+### 🛠️ Maintenance
+
+- maint: bump honeycombauthextension to v0.2.0 (#109) | @MikeGoldsmith
+- maint: bump Honeycomb dependencies (#108) | @tdarwin
+- maint: bump Honeycomb dependencies (#110) | @tdarwin
+
 ## v0.0.36 [beta] - 2026-07-21
 
 ### 🛠️ Maintenance
