@@ -2,6 +2,17 @@
 
 ## Unreleased
 
+## v0.0.38 [beta] - 2026-08-17
+
+### ✨ Features
+
+- feat: add dynamic_sampling processor [OTEL-453] (#117) | @MikeGoldsmith
+
+### 🛠️ Maintenance
+
+- maint: bump collector libs to v1.64.0/v0.158.0 (#113, #114) | @tdarwin
+- maint: bump Honeycomb dependencies (#115, #116) | @tdarwin
+
 ## v0.0.37 [beta] - 2026-08-04
 
 ### ✨ Features
