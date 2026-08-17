@@ -36,6 +36,7 @@ docker run \
 | Processor      | resourcedetectionprocessor | [resourcedetectionprocessor](https://pkg.go.dev/github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourcedetectionprocessor) |
 | Processor      | resourceprocessor | [resourceprocessor](https://pkg.go.dev/github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourceprocessor) |
 | Processor      | drainprocessor | [drainprocessor](https://pkg.go.dev/github.com/open-telemetry/opentelemetry-collector-contrib/processor/drainprocessor) |
+| Processor      | dynamicsamplingprocessor | [dynamicsamplingprocessor](https://pkg.go.dev/github.com/open-telemetry/opentelemetry-collector-contrib/processor/dynamicsamplingprocessor) |
 | Processor      | sourcemapprocessor | [sourcemapprocessor](https://pkg.go.dev/github.com/honeycombio/opentelemetry-collector-symbolicator/sourcemapprocessor) |
 | Processor      | dsymprocessor | [dsymprocessor](https://pkg.go.dev/github.com/honeycombio/opentelemetry-collector-symbolicator/dsymprocessor) |
 | Processor      | proguardprocessor | [proguardprocessor](https://pkg.go.dev/github.com/honeycombio/opentelemetry-collector-symbolicator/proguardprocessor) |
