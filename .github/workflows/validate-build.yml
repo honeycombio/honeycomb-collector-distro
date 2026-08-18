@@ -1,0 +1,31 @@
+name: Validate Build
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: .tool-versions
+          cache: false
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/go/pkg/mod
+            ~/.cache/go-build
+          key: go-build-${{ hashFiles('builder-config.yaml', 'Makefile') }}
+          restore-keys: |
+            go-build-
+      - name: Add GOPATH/bin to PATH
+        run: echo "$(go env GOPATH)/bin" >> "$GITHUB_PATH"
+      - name: Build collector
+        run: make build
+      - name: Validate config
+        run: ./bin/honeycomb-otelcol validate --config config.yaml
