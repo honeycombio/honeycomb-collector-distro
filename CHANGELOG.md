@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## v0.0.39 [beta] - 2026-08-18
+
+### 🛠️ Maintenance
+
+- maint: bump collector libs to v1.65.0/v0.159.0 (#120) | @tdarwin
+
 ## v0.0.38 [beta] - 2026-08-17
 
 ### ✨ Features
