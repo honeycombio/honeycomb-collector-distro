@@ -36,7 +36,7 @@ docker run \
 | Processor      | resourcedetectionprocessor | [resourcedetectionprocessor](https://pkg.go.dev/github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourcedetectionprocessor) |
 | Processor      | resourceprocessor | [resourceprocessor](https://pkg.go.dev/github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourceprocessor) |
 | Processor      | drainprocessor | [drainprocessor](https://pkg.go.dev/github.com/open-telemetry/opentelemetry-collector-contrib/processor/drainprocessor) |
-| Processor      | adaptivetailsamplingprocessor | [adaptivetailsamplingprocessor](https://pkg.go.dev/github.com/open-telemetry/opentelemetry-collector-contrib/processor/adaptivetailsamplingprocessor) |
+| Processor      | adaptivetailsamplingprocessor (experimental) | [adaptivetailsamplingprocessor](https://pkg.go.dev/github.com/open-telemetry/opentelemetry-collector-contrib/processor/adaptivetailsamplingprocessor) |
 | Processor      | sourcemapprocessor | [sourcemapprocessor](https://pkg.go.dev/github.com/honeycombio/opentelemetry-collector-symbolicator/sourcemapprocessor) |
 | Processor      | dsymprocessor | [dsymprocessor](https://pkg.go.dev/github.com/honeycombio/opentelemetry-collector-symbolicator/dsymprocessor) |
 | Processor      | proguardprocessor | [proguardprocessor](https://pkg.go.dev/github.com/honeycombio/opentelemetry-collector-symbolicator/proguardprocessor) |
@@ -67,3 +67,6 @@ docker run \
 | Extension      | healthcheckextension | [healthcheckextension](https://pkg.go.dev/github.com/open-telemetry/opentelemetry-collector-contrib/extension/healthcheckextension) |
 | Extension      | pprofextension | [pprofextension](https://pkg.go.dev/github.com/open-telemetry/opentelemetry-collector-contrib/extension/pprofextension) |
 | Extension      | honeycombauthextension | [honeycombauthextension](https://pkg.go.dev/github.com/honeycombio/honeycomb-auth-extension/honeycombauthextension) |
+
+> [!WARNING]
+> The `adaptive_tail_sampling` processor is upstream `development` stability and is included here as an experimental preview, pinned to an upstream commit rather than a release. Configuration, metrics, and attributes may change without notice between distro versions. Do not rely on it for critical workloads yet.
