@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+## v0.0.40 [beta] - 2026-08-26
+
+### ✨ Features
+
+- feat: replace dynamic_sampling processsor with adapative_tail_sampling processor (#124) | @MikeGoldsmith
+
+### 🛠️ Maintenance
+
+- maint: bump go to 1.26 (#123) | @tdarwin
+
 ## v0.0.39 [beta] - 2026-08-18
 
 ### 🛠️ Maintenance
