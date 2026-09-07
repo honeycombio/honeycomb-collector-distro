@@ -1,0 +1,28 @@
+name: notify-failures
+
+# Alerts Slack when a workflow fails on main.
+
+on:
+  workflow_run:
+    workflows:
+      - Check Dependency Updates
+      - Validate Build
+    types: [completed]
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  notify:
+    if: github.event.workflow_run.conclusion == 'failure'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: slackapi/slack-github-action@dcb1066f776dd043e64d0e8ba94ca15cc7e1875d # v4.0.0
+        with:
+          webhook: ${{ secrets.SLACK_CI_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
+          payload: |
+            {
+              "text": "`${{ github.event.workflow_run.name }}` failed on `${{ github.event.workflow_run.head_branch }}` — <${{ github.event.workflow_run.html_url }}|view run>"
+            }
