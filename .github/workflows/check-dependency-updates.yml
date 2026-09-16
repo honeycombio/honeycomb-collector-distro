@@ -3,7 +3,7 @@ name: "Check Dependency Updates"
 on:
   schedule:
     # Run daily at 14:00 UTC (morning US time zones)
-    - cron: "0 14 * * *"
+    - cron: "0 02 * * *"
   workflow_dispatch: {}
 
 jobs:
