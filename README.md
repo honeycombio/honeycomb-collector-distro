@@ -69,4 +69,4 @@ docker run \
 | Extension      | honeycombauthextension | [honeycombauthextension](https://pkg.go.dev/github.com/honeycombio/honeycomb-auth-extension/honeycombauthextension) |
 
 > [!WARNING]
-> The `adaptive_tail_sampling` processor is upstream `development` stability and is included here as an experimental preview, pinned to an upstream commit rather than a release. Configuration, metrics, and attributes may change without notice between distro versions. Do not rely on it for critical workloads yet.
+> The `adaptive_tail_sampling` processor is upstream `development` stability and is included here as an experimental preview. Configuration, metrics, and attributes may change without notice between distro versions. Do not rely on it for critical workloads yet.
