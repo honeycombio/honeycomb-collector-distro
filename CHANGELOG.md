@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## v0.0.42 [beta] - 2026-09-21
+
+### 🛠️ Maintenance
+
+- maint: bump enhance-indexing-s3-exporter/v0.0.28 dsymprocessor/v1.0.3 (#134) | @tdarwin
+
 ## v0.0.41 [beta] - 2026-09-17
 
 ### 🛠️ Maintenance
