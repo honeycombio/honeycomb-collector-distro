@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+## v0.0.43 [beta] - 2026-10-07
+
+A rebuild that addresses currently fixable CVEs in the container image.
+
+### 🛠️ Maintenance
+
+- maint: bump Honeycomb dependencies (#138) | @tdarwin
+- maint: bump collector libs to v1.68.0/v0.162.0 (#137, #140) | @tdarwin
+
 ## v0.0.42 [beta] - 2026-09-21
 
 ### 🛠️ Maintenance
