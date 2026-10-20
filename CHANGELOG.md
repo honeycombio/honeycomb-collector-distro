@@ -2,6 +2,19 @@
 
 ## Unreleased
 
+## v0.0.44 [beta] - 2026-10-20
+
+A rebuild with Go 1.27.3, which fixes CVE-2026-111943 (revoked eMudhra intermediate certificates in `crypto/x509`).
+
+### ✨ Features
+
+- feat: add k8sattributesprocessor and logdedupprocessor (#144) | @lizthegrey
+
+### 🛠️ Maintenance
+
+- maint: build with Go 1.27.3 (#144) | @lizthegrey
+- maint: bump collector libs to v1.69.0/v0.163.0 (#143) | @lizthegrey
+
 ## v0.0.43 [beta] - 2026-10-07
 
 A rebuild that addresses currently fixable CVEs in the container image.
