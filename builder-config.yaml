@@ -67,3 +67,9 @@ extensions:
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/healthcheckextension v0.163.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/pprofextension v0.163.0
   - gomod: github.com/honeycombio/honeycomb-auth-extension/honeycombauthextension v0.3.0
+
+# TODO: remove once enhanceindexings3exporter releases a build against collector v0.163.
+# v0.0.30 requires the root collector module v0.162.0, which still contains internal/statusutil;
+# in v0.163.0 that package is its own module, causing an "ambiguous import" build error.
+replaces:
+  - go.opentelemetry.io/collector => go.opentelemetry.io/collector v0.163.0
