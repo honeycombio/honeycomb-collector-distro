@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+## v0.0.45 [beta] - 2026-10-27
+
+A rebuild on the latest `gcr.io/distroless/cc` base image, which carries `ca-certificates 20250419+deb13u1` (DSA-6572-1) and removes the revoked eMudhra intermediate certificates from the OS trust bundle.
+
+### 🛠️ Maintenance
+
+- maint: release prep for v0.0.45 (rebuild for OS `ca-certificates` fix) | @lizthegrey
+
 ## v0.0.44 [beta] - 2026-10-20
 
 A rebuild with Go 1.27.3, which fixes CVE-2026-111943 (revoked eMudhra intermediate certificates in `crypto/x509`).
