@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+## v0.0.46 [beta] - 2026-10-30
+
+A rebuild on OpenTelemetry Collector core v1.70.0/v0.164.0 and contrib v0.164.1, with `k8sattributesprocessor` moved to v1.3.1 to match.
+
+### 🛠️ Maintenance
+
+- maint: bump collector libs to v1.70.0/v0.164.0 (#148) | @tdarwin
+- maint: bump `enhanceindexings3exporter` to v0.0.32 (#150) | @tdarwin
+- maint: bump `k8sattributesprocessor` to v1.3.1 to pair with contrib v0.164.1 | @tdarwin
+
 ## v0.0.45 [beta] - 2026-10-27
 
 A rebuild on the latest `gcr.io/distroless/cc` base image, which carries `ca-certificates 20250419+deb13u1` (DSA-6572-1) and removes the revoked eMudhra intermediate certificates from the OS trust bundle.
