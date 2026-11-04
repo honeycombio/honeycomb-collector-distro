@@ -17,6 +17,7 @@ jobs:
       new_core_v0: ${{ steps.check.outputs.new_core_v0 }}
       new_core_v1: ${{ steps.check.outputs.new_core_v1 }}
       new_contrib_v0: ${{ steps.check.outputs.new_contrib_v0 }}
+      new_k8sattributes: ${{ steps.check.outputs.new_k8sattributes }}
       go_updated: ${{ steps.check.outputs.go_updated }}
       new_go_minor: ${{ steps.check.outputs.new_go_minor }}
     steps:
@@ -33,7 +34,10 @@ jobs:
           CURRENT_CONTRIB_V0=$(grep -m1 'opentelemetry-collector-contrib/' builder-config.yaml | grep -oP 'v0\.\d+\.\d+')
           echo "Current collector core v0: $CURRENT_CORE_V0"
           echo "Current collector core v1: $CURRENT_CORE_V1"
+          # k8sattributesprocessor is versioned independently of the other contrib modules
+          CURRENT_K8SATTRIBUTES=$(grep -m1 'opentelemetry-collector-contrib/processor/k8sattributesprocessor' builder-config.yaml | grep -oP 'v\d+\.\d+\.\d+')
           echo "Current collector contrib v0: $CURRENT_CONTRIB_V0"
+          echo "Current k8sattributesprocessor: $CURRENT_K8SATTRIBUTES"
 
           # Get current Go major.minor from Dockerfile
           CURRENT_GO_MINOR=$(grep -oP '(?<=FROM golang:)\d+\.\d+' Dockerfile)
@@ -50,43 +54,77 @@ jobs:
           LATEST_CONTRIB_V0=$(curl -sf 'https://proxy.golang.org/github.com/open-telemetry/opentelemetry-collector-contrib/exporter/fileexporter/@latest' | jq -r '.Version')
           echo "Latest collector contrib v0 (from Go proxy): $LATEST_CONTRIB_V0"
 
-          # Check the Go version from the collector's go.mod (major.minor only)
-          UPSTREAM_GO=$(gh api repos/open-telemetry/opentelemetry-collector/contents/go.mod --jq '.content' \
+          LATEST_K8SATTRIBUTES=$(curl -sf 'https://proxy.golang.org/github.com/open-telemetry/opentelemetry-collector-contrib/processor/k8sattributesprocessor/@latest' | jq -r '.Version')
+          echo "Latest k8sattributesprocessor (from Go proxy): $LATEST_K8SATTRIBUTES"
+
+          # Check the Go version from the go.mod of the latest collector release (major.minor only)
+          UPSTREAM_GO=$(gh api "repos/open-telemetry/opentelemetry-collector/contents/go.mod?ref=$LATEST_CORE_V0" --jq '.content' \
             | base64 -d | grep -oP '(?<=^go )\d+\.\d+' | head -1)
           echo "Upstream collector Go version: $UPSTREAM_GO"
+
+          if [ -z "$LATEST_CORE_V0" ] || [ "$LATEST_CORE_V0" == "null" ] ||
+             [ -z "$LATEST_CORE_V1" ] || [ "$LATEST_CORE_V1" == "null" ] ||
+             [ -z "$LATEST_CONTRIB_V0" ] || [ "$LATEST_CONTRIB_V0" == "null" ] ||
+             [ -z "$LATEST_K8SATTRIBUTES" ] || [ "$LATEST_K8SATTRIBUTES" == "null" ]; then
+            echo "Could not determine the latest upstream versions, skipping."
+            echo "updated=false" >> "$GITHUB_OUTPUT"
+            echo "go_updated=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          # Only update when core and contrib have both released the same v0 minor
+          # (patch versions can differ, e.g. core v0.164.0 with contrib v0.164.1).
+          LATEST_CORE_MINOR=$(echo "$LATEST_CORE_V0" | cut -d. -f2)
+          LATEST_CONTRIB_MINOR=$(echo "$LATEST_CONTRIB_V0" | cut -d. -f2)
+          if [ "$LATEST_CORE_MINOR" != "$LATEST_CONTRIB_MINOR" ]; then
+            echo "Collector core ($LATEST_CORE_V0) and contrib ($LATEST_CONTRIB_V0) are not on the same minor version yet, skipping."
+            echo "updated=false" >> "$GITHUB_OUTPUT"
+            echo "go_updated=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
 
           CORE_V0_CHANGED="false"
           CORE_V1_CHANGED="false"
           CONTRIB_V0_CHANGED="false"
+          K8SATTRIBUTES_CHANGED="false"
 
-          if [ "$LATEST_CORE_V0" != "$CURRENT_CORE_V0" ] && [ -n "$LATEST_CORE_V0" ] && [ "$LATEST_CORE_V0" != "null" ]; then
+          if [ "$LATEST_CORE_V0" != "$CURRENT_CORE_V0" ]; then
             CORE_V0_CHANGED="true"
           fi
-          if [ "$LATEST_CORE_V1" != "$CURRENT_CORE_V1" ] && [ -n "$LATEST_CORE_V1" ] && [ "$LATEST_CORE_V1" != "null" ]; then
+          if [ "$LATEST_CORE_V1" != "$CURRENT_CORE_V1" ]; then
             CORE_V1_CHANGED="true"
           fi
-          if [ "$LATEST_CONTRIB_V0" != "$CURRENT_CONTRIB_V0" ] && [ -n "$LATEST_CONTRIB_V0" ] && [ "$LATEST_CONTRIB_V0" != "null" ]; then
+          if [ "$LATEST_CONTRIB_V0" != "$CURRENT_CONTRIB_V0" ]; then
             CONTRIB_V0_CHANGED="true"
           fi
+          if [ "$LATEST_K8SATTRIBUTES" != "$CURRENT_K8SATTRIBUTES" ]; then
+            K8SATTRIBUTES_CHANGED="true"
+          fi
 
+          # Only move Go forward: we may already be ahead of the upstream collector.
           GO_CHANGED="false"
-          if [ "$UPSTREAM_GO" != "$CURRENT_GO_MINOR" ] && [ -n "$UPSTREAM_GO" ]; then
+          if [ -n "$UPSTREAM_GO" ] && [ "$UPSTREAM_GO" != "$CURRENT_GO_MINOR" ] &&
+             [ "$(printf '%s\n%s\n' "$CURRENT_GO_MINOR" "$UPSTREAM_GO" | sort -V | tail -1)" == "$UPSTREAM_GO" ]; then
             GO_CHANGED="true"
           fi
 
-          if [ "$CORE_V0_CHANGED" == "true" ] || [ "$CORE_V1_CHANGED" == "true" ] || [ "$CONTRIB_V0_CHANGED" == "true" ] || [ "$GO_CHANGED" == "true" ]; then
+          # A Go bump alone does not open a PR; it rides along with a collector update.
+          if [ "$CORE_V0_CHANGED" == "true" ] || [ "$CORE_V1_CHANGED" == "true" ] || [ "$CONTRIB_V0_CHANGED" == "true" ] || [ "$K8SATTRIBUTES_CHANGED" == "true" ]; then
             echo "updated=true" >> "$GITHUB_OUTPUT"
             echo "new_core_v0=$LATEST_CORE_V0" >> "$GITHUB_OUTPUT"
             echo "new_core_v1=$LATEST_CORE_V1" >> "$GITHUB_OUTPUT"
             echo "new_contrib_v0=$LATEST_CONTRIB_V0" >> "$GITHUB_OUTPUT"
+            echo "new_k8sattributes=$LATEST_K8SATTRIBUTES" >> "$GITHUB_OUTPUT"
             echo "Updates available:"
             echo "  Core v0: $CURRENT_CORE_V0 -> $LATEST_CORE_V0 (changed: $CORE_V0_CHANGED)"
             echo "  Core v1: $CURRENT_CORE_V1 -> $LATEST_CORE_V1 (changed: $CORE_V1_CHANGED)"
             echo "  Contrib v0: $CURRENT_CONTRIB_V0 -> $LATEST_CONTRIB_V0 (changed: $CONTRIB_V0_CHANGED)"
+            echo "  k8sattributesprocessor: $CURRENT_K8SATTRIBUTES -> $LATEST_K8SATTRIBUTES (changed: $K8SATTRIBUTES_CHANGED)"
             echo "  Go: $CURRENT_GO_MINOR -> $UPSTREAM_GO (changed: $GO_CHANGED)"
           else
             echo "updated=false" >> "$GITHUB_OUTPUT"
             echo "OTel Collector is up to date"
+            GO_CHANGED="false"
           fi
 
           if [ "$GO_CHANGED" == "true" ]; then
@@ -212,6 +250,7 @@ jobs:
           NEW_CORE_V0: ${{ needs.check-otel-collector.outputs.new_core_v0 }}
           NEW_CORE_V1: ${{ needs.check-otel-collector.outputs.new_core_v1 }}
           NEW_CONTRIB_V0: ${{ needs.check-otel-collector.outputs.new_contrib_v0 }}
+          NEW_K8SATTRIBUTES: ${{ needs.check-otel-collector.outputs.new_k8sattributes }}
           GO_UPDATED: ${{ needs.check-otel-collector.outputs.go_updated }}
           NEW_GO_MINOR: ${{ needs.check-otel-collector.outputs.new_go_minor }}
         run: |
@@ -219,16 +258,18 @@ jobs:
           CURRENT_CORE_V0=$(grep -m1 'go.opentelemetry.io/collector/exporter/' builder-config.yaml | grep -oP 'v0\.\d+\.\d+')
           CURRENT_CORE_V1=$(grep -m1 'go.opentelemetry.io/collector/confmap/provider/' builder-config.yaml | grep -oP 'v1\.\d+\.\d+')
           CURRENT_CONTRIB_V0=$(grep -m1 'opentelemetry-collector-contrib/' builder-config.yaml | grep -oP 'v0\.\d+\.\d+')
+          CURRENT_K8SATTRIBUTES=$(grep -m1 'opentelemetry-collector-contrib/processor/k8sattributesprocessor' builder-config.yaml | grep -oP 'v\d+\.\d+\.\d+')
 
           echo "Core v0: $CURRENT_CORE_V0 -> $NEW_CORE_V0"
           echo "Core v1: $CURRENT_CORE_V1 -> $NEW_CORE_V1"
           echo "Contrib v0: $CURRENT_CONTRIB_V0 -> $NEW_CONTRIB_V0"
+          echo "k8sattributesprocessor: $CURRENT_K8SATTRIBUTES -> $NEW_K8SATTRIBUTES"
 
-          BRANCH="auto/bump-otel-collector-${NEW_CORE_V1}-${NEW_CORE_V0}"
+          BRANCH="auto/bump-otel-collector-${NEW_CORE_V1}-${NEW_CORE_V0}-contrib${NEW_CONTRIB_V0}-k8s${NEW_K8SATTRIBUTES}"
           TITLE="maint: bump collector libs to ${NEW_CORE_V1}/${NEW_CORE_V0}"
 
           # Check if a PR already exists for this update
-          EXISTING_PR=$(gh pr list --head "$BRANCH" --json number --jq '.[0].number' 2>/dev/null || echo "")
+          EXISTING_PR=$(gh pr list --state all --head "$BRANCH" --json number --jq '.[0].number' 2>/dev/null || echo "")
           if [ -n "$EXISTING_PR" ]; then
             echo "PR #$EXISTING_PR already exists for branch $BRANCH, skipping."
             exit 0
@@ -246,7 +287,10 @@ jobs:
           sed -i "/go\.opentelemetry\.io\/collector\/confmap/s|${CURRENT_CORE_V1}|${NEW_CORE_V1}|g" builder-config.yaml
 
           # Update contrib v0.x versions (opentelemetry-collector-contrib modules)
-          sed -i "/opentelemetry-collector-contrib\//s|${CURRENT_CONTRIB_V0}|${NEW_CONTRIB_V0}|g" builder-config.yaml
+          sed -i "/opentelemetry-collector-contrib\//{/k8sattributesprocessor/!s|${CURRENT_CONTRIB_V0}|${NEW_CONTRIB_V0}|g}" builder-config.yaml
+
+          # Update k8sattributesprocessor, which has its own version
+          sed -i "s|\(opentelemetry-collector-contrib/processor/k8sattributesprocessor\) ${CURRENT_K8SATTRIBUTES}|\1 ${NEW_K8SATTRIBUTES}|" builder-config.yaml
 
           # Update Go version in Dockerfile if changed
           GO_BODY_LINE=""
@@ -265,7 +309,7 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add builder-config.yaml Makefile Dockerfile
           git commit -m "$TITLE"
-          git push --force-with-lease origin "$BRANCH"
+          git push origin "$BRANCH"
 
           # Create the PR
           gh pr create \
@@ -277,6 +321,7 @@ jobs:
           - Core modules: \`${NEW_CORE_V0}\`
           - Confmap providers: \`${NEW_CORE_V1}\`
           - Collector Contrib modules: \`${NEW_CONTRIB_V0}\`
+          - k8sattributesprocessor: \`${NEW_K8SATTRIBUTES}\`
           - Builder: \`${NEW_CORE_V0}\`
           ${GO_BODY_LINE}
 
