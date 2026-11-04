@@ -265,11 +265,11 @@ jobs:
           echo "Contrib v0: $CURRENT_CONTRIB_V0 -> $NEW_CONTRIB_V0"
           echo "k8sattributesprocessor: $CURRENT_K8SATTRIBUTES -> $NEW_K8SATTRIBUTES"
 
-          BRANCH="auto/bump-otel-collector-${NEW_CORE_V1}-${NEW_CORE_V0}"
+          BRANCH="auto/bump-otel-collector-${NEW_CORE_V1}-${NEW_CORE_V0}-contrib${NEW_CONTRIB_V0}-k8s${NEW_K8SATTRIBUTES}"
           TITLE="maint: bump collector libs to ${NEW_CORE_V1}/${NEW_CORE_V0}"
 
           # Check if a PR already exists for this update
-          EXISTING_PR=$(gh pr list --head "$BRANCH" --json number --jq '.[0].number' 2>/dev/null || echo "")
+          EXISTING_PR=$(gh pr list --state all --head "$BRANCH" --json number --jq '.[0].number' 2>/dev/null || echo "")
           if [ -n "$EXISTING_PR" ]; then
             echo "PR #$EXISTING_PR already exists for branch $BRANCH, skipping."
             exit 0
@@ -287,7 +287,7 @@ jobs:
           sed -i "/go\.opentelemetry\.io\/collector\/confmap/s|${CURRENT_CORE_V1}|${NEW_CORE_V1}|g" builder-config.yaml
 
           # Update contrib v0.x versions (opentelemetry-collector-contrib modules)
-          sed -i "/opentelemetry-collector-contrib\//s|${CURRENT_CONTRIB_V0}|${NEW_CONTRIB_V0}|g" builder-config.yaml
+          sed -i "/opentelemetry-collector-contrib\//{/k8sattributesprocessor/!s|${CURRENT_CONTRIB_V0}|${NEW_CONTRIB_V0}|g}" builder-config.yaml
 
           # Update k8sattributesprocessor, which has its own version
           sed -i "s|\(opentelemetry-collector-contrib/processor/k8sattributesprocessor\) ${CURRENT_K8SATTRIBUTES}|\1 ${NEW_K8SATTRIBUTES}|" builder-config.yaml
@@ -309,6 +309,7 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add builder-config.yaml Makefile Dockerfile
           git commit -m "$TITLE"
+          git fetch origin "$BRANCH" || true
           git push --force-with-lease origin "$BRANCH"
 
           # Create the PR
