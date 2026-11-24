@@ -1,0 +1,42 @@
+name: Renovate
+
+# Runs self-hosted Renovate (https://docs.renovatebot.com), which opens pull
+# requests for dependency updates. renovate.json5 says what it updates and how
+# it groups the updates.
+#
+# Renovate pushes branches and opens pull requests with GHA_PR_TOKEN, a
+# fine-grained PAT, not GITHUB_TOKEN: pull requests opened with GITHUB_TOKEN do
+# not start the Validate Build workflow, so CI would not prove a bump compiles.
+# The token needs these repository permissions on this repository only:
+# Contents, Pull requests, Issues (the Dependency Dashboard), and Workflows
+# (action updates change files in .github/workflows), all read and write.
+on:
+  schedule:
+    # Daily at 02:00 UTC (evening in US time zones), so that a collector
+    # release from earlier in the day is complete.
+    - cron: "0 2 * * *"
+  # Run now, for example after ticking a box on the Dependency Dashboard issue.
+  workflow_dispatch: {}
+
+permissions: {}
+
+concurrency:
+  group: renovate
+
+jobs:
+  renovate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Run Renovate
+        # Runs Renovate's own image directly, pinned by digest, with no wrapper
+        # action. Renovate keeps this line up to date (see renovate.json5).
+        uses: docker://ghcr.io/renovatebot/renovate:44.254.1@sha256:42f31a79fd1dc7ce0a3e4da42a7e57a80443fd9a3401c5b2631d76bc8b4a40dd
+        env:
+          RENOVATE_TOKEN: ${{ secrets.GHA_PR_TOKEN }}
+          RENOVATE_PLATFORM: github
+          RENOVATE_REPOSITORIES: ${{ github.repository }}
+          # renovate.json5 is already here, so skip the onboarding pull request.
+          RENOVATE_ONBOARDING: "false"
+          RENOVATE_REQUIRE_CONFIG: required
+          LOG_LEVEL: info

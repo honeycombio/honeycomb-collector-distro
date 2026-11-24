@@ -5,7 +5,7 @@ name: notify-failures
 on:
   workflow_run:
     workflows:
-      - Check Dependency Updates
+      - Renovate
       - Validate Build
     types: [completed]
     branches: [main]

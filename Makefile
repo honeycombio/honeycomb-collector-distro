@@ -10,6 +10,7 @@ TARGETARCH ?= $(shell go env GOARCH)
 TARGETCC ?= $(shell go env CC)
 
 .PHONY: builder
+# Renovate updates the builder version with the collector components (see renovate.json5).
 builder:
 	go install go.opentelemetry.io/collector/cmd/builder@v0.165.0
 

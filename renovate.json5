@@ -1,0 +1,162 @@
+// Renovate opens pull requests that keep this distro's dependencies current.
+// It runs on a schedule from .github/workflows/renovate.yml; this file says
+// what it updates and how it groups the updates into pull requests.
+//
+// Open the "Dependency Dashboard" issue to see every pending update and to
+// ask for one now. Options: https://docs.renovatebot.com/configuration-options/
+{
+  $schema: "https://docs.renovatebot.com/renovate-schema.json",
+  extends: ["config:recommended"],
+
+  // Pull request titles must follow conventional commits; dependency updates
+  // use "maint:" in this repo. The label puts them under Maintenance in the
+  // generated release notes (.github/release.yml).
+  semanticCommits: "enabled",
+  semanticCommitType: "maint",
+  semanticCommitScope: null,
+  labels: ["type: dependencies"],
+
+  // Holds a release back long enough for a yanked or bad one to surface.
+  minimumReleaseAge: "3 days",
+
+  // Renovate's OpenTelemetry Collector Builder manager reads the gomod lines
+  // in builder-config.yaml. It handles every component the custom managers
+  // below do not: Honeycomb components, contrib v1 components such as
+  // k8sattributesprocessor, and any other component added later.
+  ocb: {
+    managerFilePatterns: ["/^builder-config\\.yaml$/"],
+  },
+
+  // Collector core and contrib each release all of their modules with one
+  // version number, so each group of lines below looks up one module only.
+  // This is faster than one lookup per line: for each contrib module, the Go
+  // proxy can take up to a minute to answer Renovate's check for a /v2 path.
+  customManagers: [
+    {
+      // Core v0 modules and the builder, looked up through a contrib module.
+      // Contrib releases after core with the same v0 number, so core moves
+      // only when the matching contrib exists. This prevents bump PRs where
+      // core is ahead of contrib.
+      customType: "regex",
+      description: "Collector core v0, gated on contrib",
+      managerFilePatterns: ["/^builder-config\\.yaml$/", "/^Makefile$/"],
+      matchStrings: [
+        "gomod:\\s+(?<depName>go\\.opentelemetry\\.io/collector/\\S+)\\s+(?<currentValue>v0\\.\\d+\\.\\d+)",
+        "go install (?<depName>go\\.opentelemetry\\.io/collector/cmd/builder)@(?<currentValue>v0\\.\\d+\\.\\d+)",
+      ],
+      datasourceTemplate: "go",
+      packageNameTemplate: "github.com/open-telemetry/opentelemetry-collector-contrib/processor/transformprocessor",
+      depTypeTemplate: "core-via-contrib",
+    },
+    {
+      // The same core v0 lines, looked up in core, for core-only patch
+      // releases (for example v0.152.1) that the contrib lookup never sees.
+      customType: "regex",
+      description: "Collector core v0 patch releases",
+      managerFilePatterns: ["/^builder-config\\.yaml$/", "/^Makefile$/"],
+      matchStrings: [
+        "gomod:\\s+(?<depName>go\\.opentelemetry\\.io/collector/\\S+)\\s+(?<currentValue>v0\\.\\d+\\.\\d+)",
+        "go install (?<depName>go\\.opentelemetry\\.io/collector/cmd/builder)@(?<currentValue>v0\\.\\d+\\.\\d+)",
+      ],
+      datasourceTemplate: "go",
+      packageNameTemplate: "go.opentelemetry.io/collector/exporter/debugexporter",
+      depTypeTemplate: "core-patch",
+    },
+    {
+      // Core v1 modules (the confmap providers) have their own numbering.
+      customType: "regex",
+      description: "Collector core v1",
+      managerFilePatterns: ["/^builder-config\\.yaml$/"],
+      matchStrings: [
+        "gomod:\\s+(?<depName>go\\.opentelemetry\\.io/collector/\\S+)\\s+(?<currentValue>v1\\.\\d+\\.\\d+)",
+      ],
+      datasourceTemplate: "go",
+      packageNameTemplate: "go.opentelemetry.io/collector/confmap/provider/envprovider",
+      depTypeTemplate: "core-v1",
+    },
+    {
+      // Contrib v0 modules. Contrib v1 modules have their own versions and
+      // are left to the ocb manager.
+      customType: "regex",
+      description: "Collector contrib v0",
+      managerFilePatterns: ["/^builder-config\\.yaml$/"],
+      matchStrings: [
+        "gomod:\\s+(?<depName>github\\.com/open-telemetry/opentelemetry-collector-contrib/\\S+)\\s+(?<currentValue>v0\\.\\d+\\.\\d+)",
+      ],
+      datasourceTemplate: "go",
+      packageNameTemplate: "github.com/open-telemetry/opentelemetry-collector-contrib/processor/transformprocessor",
+      depTypeTemplate: "contrib",
+    },
+  ],
+
+  // When more than one rule matches an update, the last rule wins.
+  packageRules: [
+    {
+      description: "The custom managers above own these lines, so the ocb manager skips them.",
+      matchManagers: ["ocb"],
+      matchPackageNames: ["go.opentelemetry.io/collector/**"],
+      enabled: false,
+    },
+    {
+      description: "The custom managers above own the contrib v0 lines, so the ocb manager skips them.",
+      matchManagers: ["ocb"],
+      matchPackageNames: ["github.com/open-telemetry/opentelemetry-collector-contrib/**"],
+      matchCurrentVersion: "/^v0\\./",
+      enabled: false,
+    },
+    {
+      description: "One pull request for each OpenTelemetry Collector release: core, contrib, and the builder move together.",
+      groupName: "OpenTelemetry Collector",
+      matchPackageNames: [
+        "go.opentelemetry.io/collector/**",
+        "github.com/open-telemetry/opentelemetry-collector-contrib/**",
+      ],
+    },
+    {
+      description: "Contrib has patch releases that core does not (for example v0.165.1), so core takes only contrib's x.y.0 releases.",
+      matchDepTypes: ["core-via-contrib"],
+      allowedVersions: "/^v0\\.\\d+\\.0$/",
+    },
+    {
+      description: "Core minor releases come through the contrib-gated lookup. The core lookup only proposes patches, in its own pull request, so that two pull requests never change one line.",
+      matchDepTypes: ["core-patch"],
+      matchUpdateTypes: ["minor", "major"],
+      enabled: false,
+    },
+    {
+      matchDepTypes: ["core-patch"],
+      groupName: "OpenTelemetry Collector core patch",
+    },
+    {
+      description: "Core v1 cannot be gated on contrib, because its numbers differ. One more day than the other lines lets contrib, which can release up to a day after core, catch up first.",
+      matchDepTypes: ["core-v1"],
+      minimumReleaseAge: "4 days",
+    },
+    {
+      description: "Honeycomb-owned components release on their own schedule.",
+      groupName: "Honeycomb components",
+      matchPackageNames: ["github.com/honeycombio/**"],
+    },
+    {
+      description: "Workflow actions in one pull request.",
+      groupName: "GitHub Actions",
+      matchManagers: ["github-actions"],
+    },
+    {
+      description: "CircleCI orbs in one pull request.",
+      groupName: "CircleCI orbs",
+      matchManagers: ["circleci"],
+    },
+    {
+      description: "The Go toolchain: the Docker build image, .tool-versions, and setup-go in CI move together.",
+      groupName: "Go",
+      matchDepNames: ["go", "golang"],
+    },
+    {
+      description: "Renovate releases several times a day. Update it once a month.",
+      matchDepNames: ["ghcr.io/renovatebot/renovate"],
+      groupName: "Renovate",
+      schedule: ["on the first day of the month"],
+    },
+  ],
+}

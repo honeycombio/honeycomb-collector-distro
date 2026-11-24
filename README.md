@@ -71,3 +71,28 @@ docker run \
 
 > [!WARNING]
 > The `adaptive_tail_sampling` processor is upstream `development` stability and is included here as an experimental preview. Configuration, metrics, and attributes may change without notice between distro versions. Do not rely on it for critical workloads yet.
+
+## Dependency updates
+
+[Renovate](https://docs.renovatebot.com) opens the pull requests that keep this distro current.
+It runs every day from [`.github/workflows/renovate.yml`](.github/workflows/renovate.yml), and
+[`renovate.json5`](renovate.json5) says what it updates and how it groups the updates:
+
+| Pull request | What it updates |
+|---|---|
+| OpenTelemetry Collector | Core and contrib components in `builder-config.yaml`, and the builder version in the `Makefile` |
+| Honeycomb components | The `github.com/honeycombio/...` components in `builder-config.yaml` |
+| Go | The `golang` build image in the `Dockerfile`, `.tool-versions`, and Go in CI |
+| GitHub Actions, CircleCI orbs | Actions in `.github/workflows` and orbs in `.circleci/config.yml` |
+
+Core and contrib release the same version, but contrib can release up to a day after core.
+Renovate moves core only after contrib has released the matching version, so a collector pull
+request never has core ahead of contrib. Renovate also waits 3 days after any release before it
+proposes it, so a bad release has time to be yanked.
+
+Renovate does not change `dist.version` or `CHANGELOG.md`; do that when you release (see
+[RELEASING.md](RELEASING.md)).
+
+The **Dependency Dashboard** issue lists every pending update. To get an update now, tick its box
+on the dashboard, then run the Renovate workflow manually. A new component needs no Renovate
+change: add its `gomod` line to `builder-config.yaml` and Renovate updates it from then on.
