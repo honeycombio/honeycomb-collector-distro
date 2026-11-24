@@ -11,7 +11,7 @@ TARGETCC ?= $(shell go env CC)
 
 .PHONY: builder
 builder:
-	go install go.opentelemetry.io/collector/cmd/builder@v0.165.0
+	go install go.opentelemetry.io/collector/cmd/builder@v0.166.0
 
 .PHONY: clean
 clean:
