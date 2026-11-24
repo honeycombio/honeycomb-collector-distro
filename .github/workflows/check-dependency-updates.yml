@@ -40,7 +40,7 @@ jobs:
           echo "Current k8sattributesprocessor: $CURRENT_K8SATTRIBUTES"
 
           # Get current Go major.minor from Dockerfile
-          CURRENT_GO_MINOR=$(grep -oP '(?<=FROM golang:)\d+\.\d+' Dockerfile)
+          CURRENT_GO_MINOR=$(grep -oP 'golang:\K\d+\.\d+' Dockerfile)
           echo "Current Go version in Dockerfile: $CURRENT_GO_MINOR"
 
           # Query the Go module proxy for latest stable versions
@@ -295,8 +295,8 @@ jobs:
           # Update Go version in Dockerfile if changed
           GO_BODY_LINE=""
           if [ "$GO_UPDATED" == "true" ]; then
-            CURRENT_GO_MINOR=$(grep -oP '(?<=FROM golang:)\d+\.\d+' Dockerfile)
-            sed -i "s|FROM golang:${CURRENT_GO_MINOR}|FROM golang:${NEW_GO_MINOR}|g" Dockerfile
+            CURRENT_GO_MINOR=$(grep -oP 'golang:\K\d+\.\d+' Dockerfile)
+            sed -i "s|golang:${CURRENT_GO_MINOR}|golang:${NEW_GO_MINOR}|g" Dockerfile
             echo "Go version: $CURRENT_GO_MINOR -> $NEW_GO_MINOR"
             GO_BODY_LINE="- Go version (Dockerfile): \`${CURRENT_GO_MINOR}\` → \`${NEW_GO_MINOR}\`"
           fi
