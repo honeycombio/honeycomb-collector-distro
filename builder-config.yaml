@@ -66,6 +66,7 @@ extensions:
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/headerssetterextension v0.165.1
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/healthcheckextension v0.165.1
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/pprofextension v0.165.1
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/storage/filestorage v0.165.1
   - gomod: github.com/honeycombio/honeycomb-auth-extension/honeycombauthextension v0.3.0
 
 # TODO: remove once enhanceindexings3exporter releases a build against collector v0.163.
