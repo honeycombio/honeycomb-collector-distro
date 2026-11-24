@@ -2,6 +2,26 @@
 
 ## Unreleased
 
+## v0.0.47 [beta] - 2026-11-24
+
+A rebuild on OpenTelemetry Collector core v1.72.0/v0.166.0 and contrib v0.166.0, with `k8sattributesprocessor` moved to v1.5.0 to match. Adds the `file_storage` extension, so exporter sending queues can persist to disk.
+
+### ✨ Features
+
+- feat: add file_storage extension (#159) | @tdarwin
+
+### 🛠️ Maintenance
+
+- maint: bump collector libs to v1.72.0/v0.166.0 (#161) | @tdarwin
+- maint: bump collector libs to v1.71.0/v0.165.0 (#155, #156) | @tdarwin
+- maint: bump `enhanceindexings3exporter` to v0.0.33 (#154) | @tdarwin
+
+### 🤖 CI
+
+- perf: cross-compile the collector image instead of building under QEMU (#158) | @tdarwin
+- maint: only bump collector libs when core and contrib are aligned (#153) | @tdarwin
+- fix: match the Dockerfile's golang version when checking for updates (#160) | @tdarwin
+
 ## v0.0.46 [beta] - 2026-10-30
 
 A rebuild on OpenTelemetry Collector core v1.70.0/v0.164.0 and contrib v0.164.1, with `k8sattributesprocessor` moved to v1.3.1 to match.
