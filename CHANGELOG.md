@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### ✨ Features
+
+- feat: add geoip, sampling, and metric reshaping components (#163) | @MikeGoldsmith
+
 ## v0.0.47 [beta] - 2026-11-24
 
 A rebuild on OpenTelemetry Collector core v1.72.0/v0.166.0 and contrib v0.166.0, with `k8sattributesprocessor` moved to v1.5.0 to match. Adds the `file_storage` extension, so exporter sending queues can persist to disk.
