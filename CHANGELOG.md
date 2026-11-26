@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## v0.0.48 [beta] - 2026-11-26
+
+Adds the `forward` connector and the `cumulative_to_delta`, `geoip`, `groupbyattrs` and `probabilistic_sampler` processors. `geoip` is alpha upstream and needs a MaxMind database file at runtime, which the distro doesn't ship.
+
 ### ✨ Features
 
 - feat: add geoip, sampling, and metric reshaping components (#163) | @MikeGoldsmith
