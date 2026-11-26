@@ -16,6 +16,7 @@ exporters:
 
 connectors:
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/connector/routingconnector v0.166.0
+  - gomod: go.opentelemetry.io/collector/connector/forwardconnector v0.166.0
 
 processors:
   - gomod: go.opentelemetry.io/collector/processor/batchprocessor v0.166.0
@@ -31,6 +32,10 @@ processors:
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/logdedupprocessor v0.166.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/drainprocessor v0.166.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/adaptivetailsamplingprocessor v0.166.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/cumulativetodeltaprocessor v0.166.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/geoipprocessor v0.166.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/groupbyattrsprocessor v0.166.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/probabilisticsamplerprocessor v0.166.0
   - gomod: github.com/honeycombio/opentelemetry-collector-symbolicator/sourcemapprocessor v1.0.4
   - gomod: github.com/honeycombio/opentelemetry-collector-symbolicator/dsymprocessor v1.0.3
   - gomod: github.com/honeycombio/opentelemetry-collector-symbolicator/proguardprocessor v1.0.1
